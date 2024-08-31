@@ -1,0 +1,21 @@
+% 2/26/24 Data
+clear, clc, close all
+distance = log([4:30]); %cm
+sensor_value = log([470, 405, 351, 310, 280, 255, 232, 213, 198, 185, 173, 161, 153, 140, 132, 128, 120, 116, 109, 104, 100, 96, 91, 88, 84, 83, 80]); %
+
+plot(distance,sensor_value, "o")
+xlabel("ln(distance)");
+ylabel("ln(sensor_value");
+title("Distance vs Sensor Value");
+
+%%
+clear, clc, close all
+
+actual_distance = ([4.5:30.5]); %cm
+
+% v = [];
+% a = exp(7.507);
+% b = -0.909;
+calculated_distance = [4.4, 4.9, 5.9, 6.7, 7.6, 8.5,]; %cm
+
+plot(actual_distance,calculated_distance);
