@@ -23,7 +23,7 @@ clear, clc, close all
 
 % Ambient temperature and barometric in the lab
 Tamb = 21.5; %oC
-Patm = 114.124; %kPa
+Patm = 85.6; %kPa
 % Energy put into the system in lab
 Qdot_in = 1.6; %kW
 
@@ -178,13 +178,13 @@ num_exp = 3;
         %Calculating mass flow rate of air
             Mdot_air = 0.0137 *sqrt(deltaP_out/((1+w(5))*v(5)));
         %Calculating mass flow rate of vapor into the system for each experiement
-            Mdot_vin1 = Mdot_air * w(5);
-            Mdot_vin2 = Mdot_air * w(10);
-            Mdot_vin3 = Mdot_air * w(15);
+            Mdot_vin1 = Mdot_air * w(1);
+            Mdot_vin2 = Mdot_air * w(6);
+            Mdot_vin3 = Mdot_air * w(11);
         %Calculating mass flow rate of vapor out of the system for each experiment
-            Mdot_vout1 = Mdot_air * w(1);
-            Mdot_vout2 = Mdot_air * w(6);
-            Mdot_vout3 = Mdot_air * w(11);
+            Mdot_vout1 = Mdot_air * w(5);
+            Mdot_vout2 = Mdot_air * w(10);
+            Mdot_vout3 = Mdot_air * w(15);
         %Calculating total mass flow rate of water out of the system for each experiment
             Mdot_wOut1 = Mdot_wIn(1) + Mdot_vin1 - Mdot_vout1;
             Mdot_wOut2 = Mdot_wIn(2) + Mdot_vin2 - Mdot_vout2;
@@ -197,7 +197,7 @@ num_exp = 3;
         hold on
             plot(T5(3) ,Mdot_wOut3/Mdot_wIn(3), "ro")
     %Adding legend
-        legend("Mdot_w_,_i_n = 28 gm/s", "Mdot_w_,_i_n = 20 gm/s", "Mdot_w_,_i_n = 40 gm/s","location","southeast")
+        legend("Mdot_w_,_i_n = 28 gm/s", "Mdot_w_,_i_n = 20 gm/s", "Mdot_w_,_i_n = 40 gm/s","location","northeast")
     %Adding title and axis labels
         title("Inlet Water Temperature vs Ratio of Outlet Water Mass Flow Rate to Inlet Water Mass Flow Rate")
         xlabel("Inlet Water Temperature [^oC]")
