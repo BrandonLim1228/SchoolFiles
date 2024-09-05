@@ -1,0 +1,543 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>Script</title>
+<meta name="generator" content="MATLAB 24.1">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2024-09-04">
+<meta name="DC.source" content="Script.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<pre class="codeinput">
+<span class="comment">%----------------------------------------------------------------------</span>
+<span class="comment">% TFES Lab (ME EN 4650)</span>
+<span class="comment">%</span>
+<span class="comment">% Water Cooling Tower - Data Analysis</span>
+<span class="comment">%</span>
+<span class="comment">% Required Plots:</span>
+<span class="comment">% 1a. Water temperature and wet bulb air temperature vs height</span>
+<span class="comment">% (indicate range and approach with dimension lines)</span>
+<span class="comment">% 1b. Efficiency vs water inlet flow rate</span>
+<span class="comment">% 1c. Specific and relative humidity vs height (and water inlet flow rate)</span>
+<span class="comment">% 1d. Dry bulb temperatures vs height (and water inlet flow rate)</span>
+<span class="comment">% 1e. Ratio of water outlet and inlet flow rates vs inlet water</span>
+<span class="comment">% temperature</span>
+<span class="comment">% 1f. Heat transfer rate to air and surroundings vs inlet water</span>
+<span class="comment">% temperature</span>
+<span class="comment">%</span>
+<span class="comment">% Curve fit the makeup water flow rate to the inlet water temperature</span>
+<span class="comment">%</span>
+<span class="comment">% Brandon Lim</span>
+<span class="comment">% 8/28/2024</span>
+<span class="comment">%----------------------------------------------------------------------</span>
+clear, clc, close <span class="string">all</span>
+
+<span class="comment">% Ambient temperature and barometric in the lab</span>
+Tamb = 21.5; <span class="comment">%oC</span>
+Patm = 85.6; <span class="comment">%kPa</span>
+<span class="comment">% Energy put into the system in lab</span>
+Qdot_in = 1.6; <span class="comment">%kW</span>
+
+<span class="comment">% Parsed data from raw data sheet</span>
+Mdot_wIn = [28 20 40];    <span class="comment">%inlet water flow speed (kg/s)</span>
+T1 = [25 25.1 25.3];      <span class="comment">%T1, air inlet temperature, dry bulb (oC)</span>
+T2 = [14.9 14.7 14.6];    <span class="comment">%T2, air inlet temperature, wet bulb (oC)</span>
+T3 = [24.7 24.5 24.6];    <span class="comment">%T3, air outlet temperature, dry bulb (oC)</span>
+T4 = [22.8 22.8 23];      <span class="comment">%T4, air outlet temperature, wet bulb (oC)</span>
+T5 = [28 30.1 26.8];      <span class="comment">%T5, water inlet temperature (oC)</span>
+T6 = [19.9 19.2 20.6];    <span class="comment">%T6, water outlet temperature (oC)</span>
+t1 = [22.8 22.6 23.1];    <span class="comment">%t1, air temperature at H, wet bulb (oC)</span>
+t2 = [22.7 22.4 23.2];    <span class="comment">%t2, air temperature at H, dry bulb (oC)</span>
+t3 = [25.4 25.9 25.1];    <span class="comment">%t3, water temperature at H (oC)</span>
+t4 = [21.3 21.3 22];      <span class="comment">%t4, air temperature at G, wet bulb (oC)</span>
+t5 = [21 20.8 21.5];      <span class="comment">%t5, air temperature at G, dry bulb (oC)</span>
+t6 = [23 22.9 23.3];      <span class="comment">%t6, water temperature at G (oC)</span>
+t7 = [18.1 17.6 18.8];    <span class="comment">%t7, air temperature at F, wet bulb (oC)</span>
+t8 = [19.8 19.5 20.3];    <span class="comment">%t8, air temperature at F, dry bulb (oC)</span>
+t9 = [20.6 19.9 21.6];    <span class="comment">%t9, water temperature at F(oC)</span>
+deltaP_out = 10;          <span class="comment">%pressure drop at air outlet (mm H20)</span>
+L1 = [9 9 9];             <span class="comment">%Initial height of makeup water tank (in)</span>
+L2 = [7.125 7.1 6.875];   <span class="comment">%Finial height of makeup water tank (in)</span>
+t = [300 300 300];        <span class="comment">%Time of experiment (s)</span>
+
+<span class="comment">%Number of different inlet water flow rates</span>
+num_exp = 3;
+
+<span class="comment">%Plotting water and wet bulb temperature as a function of height (Plot 1a)</span>
+    <span class="comment">%creating data vectors for m_dot = 28 g/s</span>
+      Twb = [T2(1) t7(1) t4(1) t1(1) T4(1)]; <span class="comment">%Wet bulb temperature vector (oC)</span>
+      Tw = [T6(1) t9(1) t6(1) t3(1) T5(1)]; <span class="comment">%Water temperature vector (oC)</span>
+      height = [0 24.8 48.3 71.8 100]./100; <span class="comment">%Height markers for each temperature in (m)</span>
+    <span class="comment">%Plotting Data</span>
+      figure
+        plot(height, Tw,<span class="string">"s"</span>,<span class="string">"MarkerFaceColor"</span>,<span class="string">"r"</span>,<span class="string">"MarkerEdgeColor"</span>,<span class="string">"r"</span>);
+      hold <span class="string">on</span>
+        plot(height,Twb,<span class="string">"s"</span>,<span class="string">"MarkerFaceColor"</span>,<span class="string">"b"</span>, <span class="string">"MarkerEdgeColor"</span>,<span class="string">"b"</span>);
+    <span class="comment">%Adding Legend</span>
+      legend(<span class="string">"Water"</span>,<span class="string">"Wet Bulb"</span>,<span class="string">"location"</span>,<span class="string">"southeast"</span>)
+    <span class="comment">%Adding Titles and axis labels</span>
+      title(<span class="string">"Height vs Water and Wet Bulb Temperatures"</span>)
+      ylabel(<span class="string">"Temperature [Celcius]"</span>)
+       xlabel(<span class="string">"Height [Meters]"</span>)
+    <span class="comment">%Adding annotations for range and approach</span>
+        <span class="comment">%Approach</span>
+            <span class="comment">%Water temperature out boundary line</span>
+              annotation(<span class="string">"line"</span>,[0.001 0.1],[0.45,0.45])
+              annotation(<span class="string">"textbox"</span>,[0.001,0.001 0.48,0.48], <span class="string">"string"</span>, <span class="string">"Tw_o_u_t = 19.9^oC"</span>, <span class="string">"EdgeColor"</span>,<span class="string">"none"</span>);
+            <span class="comment">%Inlet wet bulb temperature boundary line</span>
+              annotation(<span class="string">"line"</span>,[0.001 0.1],[0.163,0.163])
+              annotation(<span class="string">"textbox"</span>,[0.001,0.001 0.193,0.193], <span class="string">"string"</span>, <span class="string">"Twb_i_n = 14.9^oC"</span>, <span class="string">"EdgeColor"</span>,<span class="string">"none"</span>);
+            <span class="comment">%Approach Double arrow</span>
+              annotation(<span class="string">"doublearrow"</span>,[0.07,0.07],[0.163,0.45])
+              annotation(<span class="string">"textbox"</span>,[0.058,0.058 0.27,0.27], <span class="string">"string"</span>, <span class="string">"A"</span>, <span class="string">"EdgeColor"</span>,<span class="string">"none"</span>);
+        <span class="comment">%Range</span>
+            <span class="comment">%Water inlet temperature boundary line</span>
+              annotation(<span class="string">"line"</span>,[0.001 0.1],[0.92, 0.92])
+              annotation(<span class="string">"textbox"</span>,[0.001,0.001 0.95,0.95], <span class="string">"string"</span>, <span class="string">"Tw_i_n = 28^oC"</span>, <span class="string">"EdgeColor"</span>,<span class="string">"none"</span>);
+            <span class="comment">%Range Double arrow</span>
+              annotation(<span class="string">"doublearrow"</span>,[0.07,0.07],[0.45,0.92])
+              annotation(<span class="string">"textbox"</span>,[0.058,0.058 0.63,0.63], <span class="string">"string"</span>, <span class="string">"R"</span>, <span class="string">"EdgeColor"</span>,<span class="string">"none"</span>);
+
+<span class="comment">%Plotting cooling tower efficiency in terms of a percentage on the y-axis</span>
+<span class="comment">%as a function of water inlet flow rate in units of g/s on the x-axis (1b)</span>
+    <span class="comment">%Calculating Data needed</span>
+        <span class="comment">%Calculating Range and Approach for each flow rate measured in lab</span>
+            <span class="comment">%28 gm/s</span>
+                R1 = T5(1) - T6(1);
+                A1 = T6(1) - T2(1);
+            <span class="comment">%20 gm/s</span>
+                R2 = T5(2) - T6(2);
+                A2 = T6(2) - T2(2);
+            <span class="comment">%40 gm/s</span>
+                R3 = T5(3) - T6(3);
+                A3 = T6(3) - T2(3);
+        <span class="comment">%Calculating efficiency of the cooling tower for each flow rate</span>
+        <span class="comment">%measured in lab</span>
+            <span class="comment">%28 gm/s</span>
+                eta1 = R1/(R1+A1) * 100;
+            <span class="comment">%20 gm/s</span>
+                eta2 = R2/(R2+A2) * 100;
+            <span class="comment">%40 gm/s</span>
+                eta3 = R3/(R3+A3) * 100;
+    <span class="comment">%Plotting Data</span>
+        figure
+            plot(Mdot_wIn, [eta1, eta2, eta3],<span class="string">"s"</span>,<span class="string">"MarkerFaceColor"</span>,<span class="string">"k"</span>,<span class="string">"MarkerEdgeColor"</span>,<span class="string">"k"</span>)
+    <span class="comment">%Adding axis labels and plot title</span>
+    title(<span class="string">"Water Inlet Flow Rate vs Cooling Tower Efficiency"</span>)
+    xlabel(<span class="string">"Water Inlet Flow Rate [gm/s]"</span>)
+    ylabel(<span class="string">"Cooling Tower Efficiency [%]"</span>)
+
+<span class="comment">%Plotting specific humidity as a function of cooling tower height (1c)</span>
+    <span class="comment">%Creating vectors used in analysis</span>
+        <span class="comment">%Creating Web Bulb Temperature vectors</span>
+            Twb1 = [T2(1) t7(1) t4(1) t1(1) T4(1)]; <span class="comment">%Wet bulb temperature vector for 28 gm/s (oC)</span>
+            Twb2 = [T2(2) t7(2) t4(2) t1(2) T4(2)]; <span class="comment">%Wet bulb temperature vector for 20 gm/s (oC)</span>
+            Twb3 = [T2(3) t7(3) t4(3) t1(3) T4(3)]; <span class="comment">%Wet bulb temperature vector for 40 gm/s (oC)</span>
+                Twb = [Twb1, Twb2, Twb3];
+        <span class="comment">%Creating Dry Bulb Temperature vectors</span>
+            Tdb1 = [T1(1) t8(1) t5(1) t2(1) T3(1)]; <span class="comment">%Dry bulb temperature vector for 28 gm/s (oc)</span>
+            Tdb2 = [T1(2) t8(2) t5(2) t2(2) T3(2)]; <span class="comment">%Dry bulb temperature vector for 28 gm/s (oc)</span>
+            Tdb3 = [T1(3) t8(3) t5(3) t2(3) T3(3)]; <span class="comment">%Dry bulb temperature vector for 28 gm/s (oc)</span>
+                Tdb = [Tdb1, Tdb2, Tdb3];
+        <span class="comment">%Creating Water Temperature vectors</span>
+            Tw1 = [T6(1) t9(1) t6(1) t3(1) T5(1)]; <span class="comment">%Water temperature vector for 28 gm/s (oC)</span>
+            Tw2 = [T6(2) t9(2) t6(2) t3(2) T5(2)]; <span class="comment">%Water temperature vector for 20 gm/s (oC)</span>
+            Tw3 = [T6(3) t9(3) t6(3) t3(3) T5(3)]; <span class="comment">%Water temperature vector for 40 gm/s (oC)</span>
+                Tw = [Tw1, Tw2, Tw3];
+    <span class="comment">%Using the Psychometric Function to find specific humidity, phi, h, and v</span>
+        <span class="keyword">for</span> i = 1:length(Tdb)
+         [Tdb(i),w(i),phi(i),h(i),Tdp(i),v(i),Twb(i)] = Psychrometrics (<span class="string">'tdb'</span>,Tdb(i),<span class="string">'twb'</span>,Twb(i),<span class="string">'p'</span>,Patm);
+        <span class="keyword">end</span>
+    <span class="comment">%Parsing specific humidity vector into respected experiment specific humidity vectors</span>
+        omega1 = w(1:5);
+        omega2 = w(6:10);
+        omega3 = w(11:end);
+    <span class="comment">%Plotting Data</span>
+        figure
+            plot(height,omega1,<span class="string">"ob"</span>)
+        hold <span class="string">on</span>
+            plot(height, omega2, <span class="string">"dg"</span>)
+        hold <span class="string">on</span>
+            plot(height,omega3,<span class="string">"sr"</span>)
+    <span class="comment">%adding legend</span>
+        legend(<span class="string">"Mdot_w_,_i_n = 28 gm/s"</span>, <span class="string">"Mdot_w_,_i_n = 20 gm/s"</span>, <span class="string">"Mdot_w_,_i_n = 40 gm/s"</span>,<span class="string">"location"</span>,<span class="string">"southeast"</span>)
+    <span class="comment">%Adding axis label and plot title</span>
+        title(<span class="string">"Height of Cooling Tower vs Specific Humidity"</span>)
+        xlabel(<span class="string">"Height of Tower [meters]"</span>)
+        ylabel(<span class="string">"Specific Humidity [kg_w_a_t_e_r_ _v_a_p_o_r/kg_d_r_y_ _a_i_r]"</span>)
+
+<span class="comment">%Plotting dry bulb air temperature as a function of cooling tower height</span>
+<span class="comment">%(1d)</span>
+    <span class="comment">%Plotting Data</span>
+        figure
+            plot(height, Tdb1, <span class="string">"ob"</span>)
+        hold <span class="string">on</span>
+            plot(height, Tdb2, <span class="string">"dg"</span>)
+        hold <span class="string">on</span>
+            plot(height, Tdb3, <span class="string">"sr"</span>)
+    <span class="comment">%adding legend</span>
+        legend(<span class="string">"Mdot_w_,_i_n 28 gm/s"</span>, <span class="string">"Mdot_w_,_i_n = 20 gm/s"</span>, <span class="string">"Mdot_w_,_i_n = 40 gm/s"</span>,<span class="string">"location"</span>,<span class="string">"southeast"</span>)
+    <span class="comment">%adding axis label and plot title</span>
+        title(<span class="string">"Height of Cooling Tower vs Dry Bulb Air Temperature"</span>)
+        xlabel(<span class="string">"Height of Tower [Meters]"</span>)
+        ylabel(<span class="string">"Dry Bulb Air Temperature [^oC]"</span>)
+
+<span class="comment">%Plotting the ratio of the water outlet mass flow rate to water inlet mass</span>
+<span class="comment">%flow rate as a function of inlet water temperature (1e)</span>
+    <span class="comment">%Calculating parameters needed to find ratio of outlet to inlet flow</span>
+    <span class="comment">%rates of water</span>
+        <span class="comment">%Calculating mass flow rate of air</span>
+            Mdot_air = 0.0137 *sqrt(deltaP_out/((1+w(5))*v(5)));
+        <span class="comment">%Calculating mass flow rate of vapor into the system for each experiement</span>
+            Mdot_vin1 = Mdot_air * w(1);
+            Mdot_vin2 = Mdot_air * w(6);
+            Mdot_vin3 = Mdot_air * w(11);
+        <span class="comment">%Calculating mass flow rate of vapor out of the system for each experiment</span>
+            Mdot_vout1 = Mdot_air * w(5);
+            Mdot_vout2 = Mdot_air * w(10);
+            Mdot_vout3 = Mdot_air * w(15);
+        <span class="comment">%Calculating total mass flow rate of water out of the system for each experiment</span>
+            Mdot_wOut1 = Mdot_wIn(1) + Mdot_vin1 - Mdot_vout1;
+            Mdot_wOut2 = Mdot_wIn(2) + Mdot_vin2 - Mdot_vout2;
+            Mdot_wOut3 = Mdot_wIn(3) + Mdot_vin3 - Mdot_vout3;
+    <span class="comment">%Plotting data</span>
+        figure
+            plot(T5(1) ,Mdot_wOut1/Mdot_wIn(1), <span class="string">"bo"</span>)
+        hold <span class="string">on</span>
+            plot(T5(2) ,Mdot_wOut2/Mdot_wIn(2), <span class="string">"go"</span>)
+        hold <span class="string">on</span>
+            plot(T5(3) ,Mdot_wOut3/Mdot_wIn(3), <span class="string">"ro"</span>)
+    <span class="comment">%Adding legend</span>
+        legend(<span class="string">"Mdot_w_,_i_n = 28 gm/s"</span>, <span class="string">"Mdot_w_,_i_n = 20 gm/s"</span>, <span class="string">"Mdot_w_,_i_n = 40 gm/s"</span>,<span class="string">"location"</span>,<span class="string">"northeast"</span>)
+    <span class="comment">%Adding title and axis labels</span>
+        title(<span class="string">"Inlet Water Temperature vs Ratio of Outlet Water Mass Flow Rate to Inlet Water Mass Flow Rate"</span>)
+        xlabel(<span class="string">"Inlet Water Temperature [^oC]"</span>)
+        ylabel(<span class="string">"Mdot_w_,_o_u_t/Mdot_w_,_i_n"</span>)
+
+<span class="comment">%Plot the heat transfer rates in units of kW on the y-axis as a inlet water</span>
+<span class="comment">%temperature on the x-axis</span>
+    <span class="comment">%Calculating values needed to find heat transfer rates</span>
+        <span class="keyword">for</span> i = 1:num_exp
+            [Tdb,w,phi,h_in(i),Tdp,v,Twb] = Psychrometrics (<span class="string">'tdb'</span>,T1(i),<span class="string">'twb'</span>,T2(i),<span class="string">'p'</span>,Patm); <span class="comment">%Using psychometric function to find inlet enthalpy of air</span>
+            [Tdb,w,phi,h_out(i),Tdp,v,Twb] = Psychrometrics (<span class="string">'tdb'</span>,T3(i),<span class="string">'twb'</span>,T4(i),<span class="string">'p'</span>,Patm); <span class="comment">%Using psychometric function to find outlet enthalpy of air</span>
+            Qdot_a(i) = Mdot_air*(h_out(i)-h_in(i)); <span class="comment">%Calculating heat gain by air for each experiment</span>
+            Qdot_amb(i) = Qdot_in + Mdot_air*(h_in(i) - h_out(i)); <span class="comment">%Calculating heat lost to surroundings</span>
+        <span class="keyword">end</span>
+    <span class="comment">%Plotting Data</span>
+        figure
+            plot(T5, Qdot_a, <span class="string">"rd"</span>)
+        hold <span class="string">on</span>
+            plot(T5, Qdot_amb, <span class="string">"ks"</span>)
+    <span class="comment">%Adding Legend</span>
+        legend(<span class="string">"Qdot_a"</span>,<span class="string">"Qdot_a_m_b"</span>,<span class="string">"location"</span>,<span class="string">"east"</span>)
+    <span class="comment">%Adding axis labels &amp; titles</span>
+        title(<span class="string">"Inlet Water Temperature vs Heat Transfer Rates"</span>)
+        xlabel(<span class="string">"Inlet Water Temperature [^oC]"</span>)
+        ylabel(<span class="string">"Heat Transfer Rate [kW]"</span>)
+</pre>
+<img vspace="5" hspace="5" src="Script_01.png" alt=""> <img vspace="5" hspace="5" src="Script_02.png" alt=""> <img vspace="5" hspace="5" src="Script_03.png" alt=""> <img vspace="5" hspace="5" src="Script_04.png" alt=""> <img vspace="5" hspace="5" src="Script_05.png" alt=""> <img vspace="5" hspace="5" src="Script_06.png" alt=""> <p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2024a</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+% TFES Lab (ME EN 4650)
+%
+% Water Cooling Tower - Data Analysis
+%
+% Required Plots:
+% 1a. Water temperature and wet bulb air temperature vs height
+% (indicate range and approach with dimension lines)
+% 1b. Efficiency vs water inlet flow rate
+% 1c. Specific and relative humidity vs height (and water inlet flow rate)
+% 1d. Dry bulb temperatures vs height (and water inlet flow rate)
+% 1e. Ratio of water outlet and inlet flow rates vs inlet water
+% temperature
+% 1f. Heat transfer rate to air and surroundings vs inlet water
+% temperature
+%
+% Curve fit the makeup water flow rate to the inlet water temperature
+%
+% Brandon Lim
+% 8/28/2024
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+clear, clc, close all
+
+% Ambient temperature and barometric in the lab
+Tamb = 21.5; %oC
+Patm = 85.6; %kPa
+% Energy put into the system in lab
+Qdot_in = 1.6; %kW
+
+% Parsed data from raw data sheet 
+Mdot_wIn = [28 20 40];    %inlet water flow speed (kg/s)
+T1 = [25 25.1 25.3];      %T1, air inlet temperature, dry bulb (oC)
+T2 = [14.9 14.7 14.6];    %T2, air inlet temperature, wet bulb (oC)
+T3 = [24.7 24.5 24.6];    %T3, air outlet temperature, dry bulb (oC)
+T4 = [22.8 22.8 23];      %T4, air outlet temperature, wet bulb (oC)
+T5 = [28 30.1 26.8];      %T5, water inlet temperature (oC)
+T6 = [19.9 19.2 20.6];    %T6, water outlet temperature (oC)
+t1 = [22.8 22.6 23.1];    %t1, air temperature at H, wet bulb (oC)
+t2 = [22.7 22.4 23.2];    %t2, air temperature at H, dry bulb (oC)
+t3 = [25.4 25.9 25.1];    %t3, water temperature at H (oC)
+t4 = [21.3 21.3 22];      %t4, air temperature at G, wet bulb (oC)
+t5 = [21 20.8 21.5];      %t5, air temperature at G, dry bulb (oC)
+t6 = [23 22.9 23.3];      %t6, water temperature at G (oC)
+t7 = [18.1 17.6 18.8];    %t7, air temperature at F, wet bulb (oC)
+t8 = [19.8 19.5 20.3];    %t8, air temperature at F, dry bulb (oC)
+t9 = [20.6 19.9 21.6];    %t9, water temperature at F(oC)
+deltaP_out = 10;          %pressure drop at air outlet (mm H20)
+L1 = [9 9 9];             %Initial height of makeup water tank (in)
+L2 = [7.125 7.1 6.875];   %Finial height of makeup water tank (in)
+t = [300 300 300];        %Time of experiment (s)
+
+%Number of different inlet water flow rates
+num_exp = 3;
+
+%Plotting water and wet bulb temperature as a function of height (Plot 1a)
+    %creating data vectors for m_dot = 28 g/s
+      Twb = [T2(1) t7(1) t4(1) t1(1) T4(1)]; %Wet bulb temperature vector (oC)
+      Tw = [T6(1) t9(1) t6(1) t3(1) T5(1)]; %Water temperature vector (oC)
+      height = [0 24.8 48.3 71.8 100]./100; %Height markers for each temperature in (m)
+    %Plotting Data
+      figure
+        plot(height, Tw,"s","MarkerFaceColor","r","MarkerEdgeColor","r");
+      hold on
+        plot(height,Twb,"s","MarkerFaceColor","b", "MarkerEdgeColor","b");
+    %Adding Legend
+      legend("Water","Wet Bulb","location","southeast")
+    %Adding Titles and axis labels
+      title("Height vs Water and Wet Bulb Temperatures")
+      ylabel("Temperature [Celcius]")
+       xlabel("Height [Meters]")
+    %Adding annotations for range and approach
+        %Approach
+            %Water temperature out boundary line
+              annotation("line",[0.001 0.1],[0.45,0.45])
+              annotation("textbox",[0.001,0.001 0.48,0.48], "string", "Tw_o_u_t = 19.9^oC", "EdgeColor","none"); 
+            %Inlet wet bulb temperature boundary line
+              annotation("line",[0.001 0.1],[0.163,0.163])
+              annotation("textbox",[0.001,0.001 0.193,0.193], "string", "Twb_i_n = 14.9^oC", "EdgeColor","none");             
+            %Approach Double arrow
+              annotation("doublearrow",[0.07,0.07],[0.163,0.45])
+              annotation("textbox",[0.058,0.058 0.27,0.27], "string", "A", "EdgeColor","none"); 
+        %Range
+            %Water inlet temperature boundary line
+              annotation("line",[0.001 0.1],[0.92, 0.92])
+              annotation("textbox",[0.001,0.001 0.95,0.95], "string", "Tw_i_n = 28^oC", "EdgeColor","none");             
+            %Range Double arrow
+              annotation("doublearrow",[0.07,0.07],[0.45,0.92])
+              annotation("textbox",[0.058,0.058 0.63,0.63], "string", "R", "EdgeColor","none");
+
+%Plotting cooling tower efficiency in terms of a percentage on the y-axis
+%as a function of water inlet flow rate in units of g/s on the x-axis (1b)
+    %Calculating Data needed 
+        %Calculating Range and Approach for each flow rate measured in lab
+            %28 gm/s
+                R1 = T5(1) - T6(1);
+                A1 = T6(1) - T2(1);
+            %20 gm/s
+                R2 = T5(2) - T6(2);
+                A2 = T6(2) - T2(2);
+            %40 gm/s
+                R3 = T5(3) - T6(3);
+                A3 = T6(3) - T2(3);
+        %Calculating efficiency of the cooling tower for each flow rate
+        %measured in lab
+            %28 gm/s
+                eta1 = R1/(R1+A1) * 100;
+            %20 gm/s
+                eta2 = R2/(R2+A2) * 100;
+            %40 gm/s
+                eta3 = R3/(R3+A3) * 100;
+    %Plotting Data
+        figure
+            plot(Mdot_wIn, [eta1, eta2, eta3],"s","MarkerFaceColor","k","MarkerEdgeColor","k")
+    %Adding axis labels and plot title
+    title("Water Inlet Flow Rate vs Cooling Tower Efficiency")
+    xlabel("Water Inlet Flow Rate [gm/s]")
+    ylabel("Cooling Tower Efficiency [%]")
+
+%Plotting specific humidity as a function of cooling tower height (1c)
+    %Creating vectors used in analysis
+        %Creating Web Bulb Temperature vectors
+            Twb1 = [T2(1) t7(1) t4(1) t1(1) T4(1)]; %Wet bulb temperature vector for 28 gm/s (oC)
+            Twb2 = [T2(2) t7(2) t4(2) t1(2) T4(2)]; %Wet bulb temperature vector for 20 gm/s (oC)
+            Twb3 = [T2(3) t7(3) t4(3) t1(3) T4(3)]; %Wet bulb temperature vector for 40 gm/s (oC)
+                Twb = [Twb1, Twb2, Twb3];
+        %Creating Dry Bulb Temperature vectors
+            Tdb1 = [T1(1) t8(1) t5(1) t2(1) T3(1)]; %Dry bulb temperature vector for 28 gm/s (oc)
+            Tdb2 = [T1(2) t8(2) t5(2) t2(2) T3(2)]; %Dry bulb temperature vector for 28 gm/s (oc)
+            Tdb3 = [T1(3) t8(3) t5(3) t2(3) T3(3)]; %Dry bulb temperature vector for 28 gm/s (oc)
+                Tdb = [Tdb1, Tdb2, Tdb3];
+        %Creating Water Temperature vectors
+            Tw1 = [T6(1) t9(1) t6(1) t3(1) T5(1)]; %Water temperature vector for 28 gm/s (oC)
+            Tw2 = [T6(2) t9(2) t6(2) t3(2) T5(2)]; %Water temperature vector for 20 gm/s (oC)
+            Tw3 = [T6(3) t9(3) t6(3) t3(3) T5(3)]; %Water temperature vector for 40 gm/s (oC)
+                Tw = [Tw1, Tw2, Tw3];
+    %Using the Psychometric Function to find specific humidity, phi, h, and v 
+        for i = 1:length(Tdb)
+         [Tdb(i),w(i),phi(i),h(i),Tdp(i),v(i),Twb(i)] = Psychrometrics ('tdb',Tdb(i),'twb',Twb(i),'p',Patm);
+        end
+    %Parsing specific humidity vector into respected experiment specific humidity vectors
+        omega1 = w(1:5);
+        omega2 = w(6:10);
+        omega3 = w(11:end);
+    %Plotting Data
+        figure
+            plot(height,omega1,"ob")
+        hold on
+            plot(height, omega2, "dg")
+        hold on
+            plot(height,omega3,"sr")
+    %adding legend 
+        legend("Mdot_w_,_i_n = 28 gm/s", "Mdot_w_,_i_n = 20 gm/s", "Mdot_w_,_i_n = 40 gm/s","location","southeast")
+    %Adding axis label and plot title
+        title("Height of Cooling Tower vs Specific Humidity")
+        xlabel("Height of Tower [meters]")
+        ylabel("Specific Humidity [kg_w_a_t_e_r_ _v_a_p_o_r/kg_d_r_y_ _a_i_r]")
+
+%Plotting dry bulb air temperature as a function of cooling tower height
+%(1d)
+    %Plotting Data
+        figure 
+            plot(height, Tdb1, "ob")
+        hold on
+            plot(height, Tdb2, "dg")
+        hold on
+            plot(height, Tdb3, "sr")
+    %adding legend
+        legend("Mdot_w_,_i_n 28 gm/s", "Mdot_w_,_i_n = 20 gm/s", "Mdot_w_,_i_n = 40 gm/s","location","southeast")
+    %adding axis label and plot title
+        title("Height of Cooling Tower vs Dry Bulb Air Temperature")
+        xlabel("Height of Tower [Meters]")
+        ylabel("Dry Bulb Air Temperature [^oC]")
+
+%Plotting the ratio of the water outlet mass flow rate to water inlet mass
+%flow rate as a function of inlet water temperature (1e)
+    %Calculating parameters needed to find ratio of outlet to inlet flow
+    %rates of water
+        %Calculating mass flow rate of air
+            Mdot_air = 0.0137 *sqrt(deltaP_out/((1+w(5))*v(5)));
+        %Calculating mass flow rate of vapor into the system for each experiement
+            Mdot_vin1 = Mdot_air * w(1);
+            Mdot_vin2 = Mdot_air * w(6);
+            Mdot_vin3 = Mdot_air * w(11);
+        %Calculating mass flow rate of vapor out of the system for each experiment
+            Mdot_vout1 = Mdot_air * w(5);
+            Mdot_vout2 = Mdot_air * w(10);
+            Mdot_vout3 = Mdot_air * w(15);
+        %Calculating total mass flow rate of water out of the system for each experiment
+            Mdot_wOut1 = Mdot_wIn(1) + Mdot_vin1 - Mdot_vout1;
+            Mdot_wOut2 = Mdot_wIn(2) + Mdot_vin2 - Mdot_vout2;
+            Mdot_wOut3 = Mdot_wIn(3) + Mdot_vin3 - Mdot_vout3;
+    %Plotting data
+        figure
+            plot(T5(1) ,Mdot_wOut1/Mdot_wIn(1), "bo")
+        hold on 
+            plot(T5(2) ,Mdot_wOut2/Mdot_wIn(2), "go")
+        hold on
+            plot(T5(3) ,Mdot_wOut3/Mdot_wIn(3), "ro")
+    %Adding legend
+        legend("Mdot_w_,_i_n = 28 gm/s", "Mdot_w_,_i_n = 20 gm/s", "Mdot_w_,_i_n = 40 gm/s","location","northeast")
+    %Adding title and axis labels
+        title("Inlet Water Temperature vs Ratio of Outlet Water Mass Flow Rate to Inlet Water Mass Flow Rate")
+        xlabel("Inlet Water Temperature [^oC]")
+        ylabel("Mdot_w_,_o_u_t/Mdot_w_,_i_n")
+       
+%Plot the heat transfer rates in units of kW on the y-axis as a inlet water
+%temperature on the x-axis
+    %Calculating values needed to find heat transfer rates
+        for i = 1:num_exp
+            [Tdb,w,phi,h_in(i),Tdp,v,Twb] = Psychrometrics ('tdb',T1(i),'twb',T2(i),'p',Patm); %Using psychometric function to find inlet enthalpy of air
+            [Tdb,w,phi,h_out(i),Tdp,v,Twb] = Psychrometrics ('tdb',T3(i),'twb',T4(i),'p',Patm); %Using psychometric function to find outlet enthalpy of air
+            Qdot_a(i) = Mdot_air*(h_out(i)-h_in(i)); %Calculating heat gain by air for each experiment
+            Qdot_amb(i) = Qdot_in + Mdot_air*(h_in(i) - h_out(i)); %Calculating heat lost to surroundings 
+        end
+    %Plotting Data
+        figure
+            plot(T5, Qdot_a, "rd")
+        hold on
+            plot(T5, Qdot_amb, "ks")
+    %Adding Legend
+        legend("Qdot_a","Qdot_a_m_b","location","east")
+    %Adding axis labels & titles
+        title("Inlet Water Temperature vs Heat Transfer Rates")
+        xlabel("Inlet Water Temperature [^oC]")
+        ylabel("Heat Transfer Rate [kW]")
+        
+##### SOURCE END #####
+-->
+</body>
+</html>
