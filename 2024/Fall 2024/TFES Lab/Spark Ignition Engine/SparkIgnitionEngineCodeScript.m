@@ -50,7 +50,7 @@ clear, clc, close all
             plot(w,torque, "ko");
     %Adding axis labels and plot title
         title("Crankshaft Engine Speed vs Torque")
-        xlabel("Engine Speed [RPM]")
+        xlabel("Crankshaft Engine Speed [RPM]")
         ylabel("Torque [Nm]")
 
 % 1b. Plot the measured brake power (W˙b) and the total mechanical powe (W˙b + W˙f ) versus crankshaft engine speed (ω), compared to the net work (W˙net) of an ideal engine operating under the same conditions.
@@ -90,7 +90,7 @@ clear, clc, close all
         eta_therm = Wb./Qin .* 100; %Thermal Efficiency
         %Thermal Efficiency of otto cycle
             r = CompressionRatio;
-            eta_otto = (1 - (1/((r^k)-1))) .* 100; %Ideal efficiency of an otto cycle
+            eta_otto = (1 - (1/(r^(k-1)))) .* 100; %Ideal efficiency of an otto cycle
     % Plotting data
         figure
             plot(w,eta_mech, "bo") %Plotting crankshaft engine speed vs mechanical efficiecny
@@ -133,7 +133,20 @@ clear, clc, close all
         title("Crankshaft Speed vs Mean Effective Pressure")
         xlabel("Crankshaft Speed [RPM]")
         ylabel("Mean Effective Pressure [kPa]")
-    %Adding estimated value of MEP at 2600 RPM from linear interpolation. Linear interpolation was done using plotting tools. 
+    %Adding estimated value of MEP at 2600 RPM from interpolation of data
+    %before and after 2600 RPM
         hold on 
-            plot(2600,-0.03415 * 2600 +352.7, "k+")
+            plot(2600,((2600 - 2500)/(2746 - 2500)) * (MEP(2)-MEP(3)) + MEP(3), "k+")
 
+% Calculation for short answer questions
+    %2a
+        r1 = Wb./Qin .* 100;
+        r2 = Wf./Qin .* 100;
+        r3 = Wnet./(Qin/1000) .* 100;
+    %2b
+        discrepency = (eta_otto - eta_therm)/eta_otto * 100;
+    %2c
+        MEP_2C = ((2600 - 2500)/(2746 - 2500)) * (MEP(2)-MEP(3)) + MEP(3); %MEP at 2600 RPM
+        F_Newtons = MEP_2C*1000 * (pi/4) * Bore^2 %Force in Newtons
+        F_lbs = F_Newtons * 0.2248 %Force in lbs
+        
