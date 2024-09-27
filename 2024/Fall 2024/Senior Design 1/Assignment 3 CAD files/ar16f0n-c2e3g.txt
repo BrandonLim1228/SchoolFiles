@@ -1,0 +1,14 @@
+﻿"Symbol";"Value";"Unit";
+"SUPPLIER_NAME";"AutomationDirect";"";
+"TraceParts.PartVersion";"1.0.0";"";
+"TraceParts.PartStatus";"Published";"";
+"TraceParts.PartNumber";"90-07102022-030739";"";
+"TraceParts.PartLanguage";"en";"";
+"DESIGN";"Fuji Electric pushbutton, IP65, 16mm, momentary, LED illuminated, DPDT contact(s), plastic base, plastic bezel, black, Operator: green, flush, 24mm, rectangular, plastic, 24 VAC/VDC, full voltage.";"";
+"TraceParts.InstanceId";"90-07102022-03073978P2ST6ENTHNY6M228NL8S6AD";"";
+"TraceParts.PartTitle";"Fuji Electric pushbutton, IP65, 16mm, momentary, LED illuminated, DPDT contact(s), plastic base, plastic bezel, black, Operator: green, flush, 24mm, rectangular, plastic, 24 VAC/VDC, full voltage.";"";
+"TRACEPARTS";"TRACEPARTS";"";
+"TraceParts.PartStatusId";"";"";
+"Part_Number_EShop_URL";"http://www.adcpn.com/pn/AR16F0N-C2E3G";"";
+"TraceParts.ClassPath";"AUTOMATION_DIRECT:90-07102022-030739";"";
+"SUPPLIER_PART_NUMBER";"AR16F0N-C2E3G";"";

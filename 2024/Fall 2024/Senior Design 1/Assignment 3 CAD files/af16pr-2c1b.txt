@@ -1,0 +1,14 @@
+﻿"Symbol";"Value";"Unit";
+"SUPPLIER_NAME";"AutomationDirect";"";
+"TraceParts.PartVersion";"1.0.0";"";
+"TraceParts.PartStatus";"Published";"";
+"TraceParts.PartNumber";"90-07102022-031096";"";
+"TraceParts.PartLanguage";"en";"";
+"DESIGN";"Fuji Electric selector switch, IP65, 19mm, 2-position, maintained, SPDT contact(s), plastic base, plastic bezel, Operator: black, knob, 22mm, round, plastic.";"";
+"TraceParts.InstanceId";"90-07102022-03109678P2ST6ENTHNY6M228NL8S6AD";"";
+"TraceParts.PartTitle";"Fuji Electric selector switch, IP65, 19mm, 2-position, maintained, SPDT contact(s), plastic base, plastic bezel, Operator: black, knob, 22mm, round, plastic.";"";
+"TRACEPARTS";"TRACEPARTS";"";
+"TraceParts.PartStatusId";"";"";
+"Part_Number_EShop_URL";"http://www.adcpn.com/pn/AF16PR-2C1B";"";
+"TraceParts.ClassPath";"AUTOMATION_DIRECT:90-07102022-031096";"";
+"SUPPLIER_PART_NUMBER";"AF16PR-2C1B";"";
