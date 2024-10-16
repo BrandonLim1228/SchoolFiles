@@ -88,7 +88,6 @@ clear, clc, close all
         ylabel("Temperature [$^\circ$C]" , "Interpreter","latex")
         xlabel("Refrigerant Mass Flow Rate [$\frac{kg}{s}$]","Interpreter","latex")
         legend("Refrigerant Temperature at Condensor Outlet & Expansion Valve Inlet", "Refrigerant Temperature at Expansion Valvue Outlet & Evaporator Inlet", "$\overline{T}_c$", "$\overline{T}_e$", "$T_{amb}$", "Interpreter","Latex","location","eastoutside");
-    close all
 
 %Plot 1b: Spcific engergy terms vs mass flow rate
     %Calculating necessary parameters for plotting 
@@ -131,8 +130,31 @@ clear, clc, close all
         title("$COP_r$ vs Refrigerent Mass Flow Rate","Interpreter","Latex")
         ylabel("$COP_r$","Interpreter","latex")
         xlabel("Refrigerant Mass Flow Rate [$\frac{kg}{s}$]","Interpreter","latex")
+close all
 
 %Plot 1d: Isentropic efficiency of the compressor and total electrical power supplied versus mass flow rate
-    
+    %Calculating parameters used in plotting 
+        %Calculating h2s from cool prop
+            for i = 1:length(T2)
+                h2s(i) = PropsSI("H","T",T2(i),"S",s2(i),"R134a");
+            end
+        %Calculating isentropic efficiency of compressor 
+            etaC = (h2s - h1)/(Win) * 100;
+    %Plotting figure 
+        %Plotting Left y axis data
+            figure 
+                yyaxis left
+                plot(m_dot,etaC,"hexagram")
+                ylabel("$\eta_c$", "Interpreter","latex")
+            hold on
+                yyaxis right
+                plot(m_dot,totalPower, "s")
+                ylabel("$\dot{W}_{total}$","interpreter","latex")
+    %Adding axis labels, and titles
+        title("Total Power and Isentropic Efficiency vs Refrigerant Mass Flow Rate")
+        xlabel("Refrigerant Mass Flow Rate [$\frac{kg}{s}$]","Interpreter","latex")
 
-            
+%Plot 1e: actual cycle process on P-h diagram
+    %Acquiring data
+    P = [P1(1), P2(1),P3(1),P4(1),P5(1)]./1000;
+    h = [h1(1), h2(1),h3(1),h4(1),h5(1)]./1000;
