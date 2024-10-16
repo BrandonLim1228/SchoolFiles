@@ -1,0 +1,14 @@
+﻿"Symbol";"Value";"Unit";
+"SUPPLIER_NAME";"AutomationDirect";"";
+"TraceParts.PartVersion";"1.1.0";"";
+"TraceParts.PartStatus";"Published";"";
+"TraceParts.PartNumber";"90-19072019-029908";"";
+"TraceParts.PartLanguage";"en";"";
+"DESIGN";"BRX Do-more PLC, 12-24 VDC required, serial port, microSD card slot, Discrete Input: 10-point, AC/DC, Discrete Output: 8-point, relay.";"";
+"TraceParts.InstanceId";"90-19072019-02990878P2ST6ENTHNY6M228NL8S6AD";"";
+"TraceParts.PartTitle";"BRX Do-more PLC, 12-24 VDC required, serial port, microSD card slot, Discrete Input: 10-point, AC/DC, Discrete Output: 8-point, relay.";"";
+"TraceParts.PartStatusId";"";"";
+"TRACEPARTS";"TRACEPARTS";"";
+"Part_Number_EShop_URL";"http://www.adcpn.com/pn/BX-DM1-18ER-D";"";
+"TraceParts.ClassPath";"/F_AUTOMATION_DIRECT/AUTOMATION_DIRECT.103/";"";
+"SUPPLIER_PART_NUMBER";"BX-DM1-18ER-D";"";
