@@ -99,9 +99,9 @@ clear, clc, close all
             %Calculating power to the compressor 
                 WdotC = totalPower - Wfan; %W
                 %Calculating power in
-                    WDotIn = 0.78*WdotC; %W
+                    WDotIn = 0.78.*WdotC; %W
                     %Calculating work in
-                        Win = WDotIn/m_dot; %J/kg
+                        Win = WDotIn./m_dot; %J/kg
                         %Calculating Heat Loss to surroundings
                             qLoss = Win + h1 - h2; %J/kg
     %Plotting figure
@@ -122,7 +122,7 @@ clear, clc, close all
 
 %Plot 1c: Coefficient of performance vs mass flow rate
     %Calculating parameter used in plotting
-        COPr = qL/Win;
+        COPr = qL./Win;
     %Plotting figure 
         figure
             plot(m_dot,COPr, "kx")
@@ -138,7 +138,7 @@ clear, clc, close all
                 h2s(i) = PropsSI("H","T",T2(i),"S",s2(i),"R134a");
             end
         %Calculating isentropic efficiency of compressor 
-            etaC = (h2s - h1)/(Win) * 100;
+            etaC = (h2s - h1)./(Win) .* 100;
     %Plotting figure 
         %Plotting Left y axis data
             figure 
@@ -148,7 +148,7 @@ clear, clc, close all
             hold on
                 yyaxis right
                 plot(m_dot,totalPower, "s")
-                ylabel("$\dot{W}_{total}$","interpreter","latex")
+                ylabel("$\dot{W}_{total} [W]$","interpreter","latex")
     %Adding axis labels, and titles
         title("Total Power and Isentropic Efficiency vs Refrigerant Mass Flow Rate")
         xlabel("Refrigerant Mass Flow Rate [$\frac{kg}{s}$]","Interpreter","latex")
