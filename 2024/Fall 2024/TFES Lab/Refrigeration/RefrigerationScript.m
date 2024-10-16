@@ -130,7 +130,6 @@ clear, clc, close all
         title("$COP_r$ vs Refrigerent Mass Flow Rate","Interpreter","Latex")
         ylabel("$COP_r$","Interpreter","latex")
         xlabel("Refrigerant Mass Flow Rate [$\frac{kg}{s}$]","Interpreter","latex")
-close all
 
 %Plot 1d: Isentropic efficiency of the compressor and total electrical power supplied versus mass flow rate
     %Calculating parameters used in plotting 
@@ -156,5 +155,22 @@ close all
 
 %Plot 1e: actual cycle process on P-h diagram
     %Acquiring data
-    P = [P1(1), P2(1),P3(1),P4(1),P5(1)]./1000;
-    h = [h1(1), h2(1),h3(1),h4(1),h5(1)]./1000;
+        P = [P1(1), P2(1),P3(1),P4(1),P5(1)]./1000;
+        h = [h1(1), h2(1),h3(1),h4(1),h5(1)]./1000;
+
+    %Opening figure of P-h diagram 
+        openfig("Ph_Diagram_R134a.fig");
+    %Plotting state points
+        hold on
+            plot([h,h(1)],[P,P(1)], "-ro")
+    %Adding annotations for states 
+        text(415,0.25,"1","color","r","FontSize",20)
+        text(398,0.42,"5","color","r","FontSize",20)
+        text(430,1.4,"2","color","r","FontSize",20)
+        text(240,1.4,"3","color","r","FontSize",20)
+        text(240,0.25,"4","color","r","FontSize",20)
+    %Adding annotations for physical state descriptions
+        text(405,0.15,"Super-heated vapor","color","r","FontSize",20,"BackgroundColor",[1 1 1])
+        text(430,0.6,"Non-isentropic","color","r","FontSize",20,"BackgroundColor",[1 1 1])
+        text(170,1.8,"Subcooled liquid","color","r","FontSize",20,"BackgroundColor",[1 1 1])
+        text(225,0.6,"h3 = h4","color","r","FontSize",20,"BackgroundColor",[1 1 1])
