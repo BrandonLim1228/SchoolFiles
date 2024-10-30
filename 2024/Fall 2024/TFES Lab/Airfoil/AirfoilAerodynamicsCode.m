@@ -54,14 +54,14 @@ clear, clc, close all
         CL(i) = Lavg(i)/(Pdyn * c * s);
         CD(i) = Davg(i)/(Pdyn * c * s);
 
-        CL_err = Lerr(i)/(Pdyn * c * s);
-        CD_err = Derr(i)/(Pdyn * c * s);
+        CL_err(i) = Lerr(i)/(Pdyn * c * s);
+        CD_err(i) = Derr(i)/(Pdyn * c * s);
     end
 
 
 %% Plot 1a: CL vs angle of attack
     %Plotting figure
-        figure1 = openfig("NACA0012_CL.fig")
+        figure1 = openfig("NACA0012_CL.fig");
         legend("AutoUpdate","off")
     %Figure limits
         xlim([0 20])
@@ -74,7 +74,7 @@ clear, clc, close all
         hold off
 %% Plot 1b: CD vs angle of attack
     %Plotting figure
-        figure2 = openfig("NACA0012_CD.fig")
+        figure2 = openfig("NACA0012_CD.fig");
         legend("AutoUpdate","off")
     %figure limits
         xlim([0 20])
@@ -94,6 +94,7 @@ clear, clc, close all
         CP12Bot = AoA12BP/Pdyn;
     %Plotting 
         %Plotting figure for AoA 5 degrees
+        figure
             subplot(1,2,1) 
                 plot(xc,CP5Top, "bo")
             hold on
