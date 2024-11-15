@@ -11,19 +11,48 @@ clear, clc, close all
 %% Problem 2
 clear, clc, close all
     %1a)
-        sys = tf([1 1.5], [1 11 10 0])
-        rlocus(sys,0:0.005:50)
+        sys = tf([1 1.5], [1 11 10 0]);
+        rlocus(sys,0:0.005:50);
         sgrid(0.799839691078,0)
     %1d)
-        k = [39.6 12.8 7.34]
-        Gcl1 = tf([k(1) ,k(1)*1.5], [1 11 (10+k(1)) k(1)*1.5])
-        Gcl2 = tf([k(2) ,k(2)*1.5], [1 11 (10+k(2)) k(2)*1.5]);
-        Gcl3 = tf([k(3) ,k(3)*1.5], [1 11 (10+k(3)) k(3)*1.5]);
+        k = [39.6 12.8 7.34];
+        Gcl1 = tf([k(1) ,k(1)*1.5], [1 11 (10+k(1)) (k(1)*1.5)]);
+        Gcl2 = tf([k(2) ,k(2)*1.5], [1 11 (10+k(2)) (k(2)*1.5)]);
+        Gcl3 = tf([k(3) ,k(3)*1.5], [1 11 (10+k(3)) (k(3)*1.5)]);
 
-        [y,t] = step(Gcl1,linspace(0,10,100000));
-        OvershootK396 = stepinfo(y,t)
-        plot(t,y)
-        % OvershootK128 = stepinfo(Gcl2).Overshoot
-        % OvershootK734 = stepinfo(Gcl3).Overshoot
 
-  
+        OvershootK396 = stepinfo(Gcl1).Overshoot;
+        OvershootK128 = stepinfo(Gcl2).Overshoot;
+        OvershootK734 = stepinfo(Gcl3).Overshoot;
+
+        k = linspace(0,7.34,1000);
+        best_k = 0;
+        go = 1;
+        for i = 1:length(k)
+            Gcl(i) = tf([k(i) ,k(i)*1.5], [1 11 (10+k(i)) (k(i)*1.5)]);
+            overshoot = stepinfo(Gcl(i)).Overshoot;
+            if overshoot < 1.522 && overshoot > 1.517
+                best_k = k(i)
+            end
+        end
+
+%% Problem 3
+clear, clc, close all
+    %1a)
+        Dc = tf([80 1.8*80], [1 22])
+        G = tf([1], [1 0 0])
+        Gcl = feedback(Dc*G,1)
+        figure
+        step(Gcl)
+        figure
+        step(G)
+        figure
+        rlocus(G)
+        stepinfo(Gcl)
+
+        roots([1 22 80 144])
+
+%%
+C = tf([1, 0.2], [1, 0.08469]);
+G = tf(1, [1, 2, 0]);
+rlocus(C*G)
