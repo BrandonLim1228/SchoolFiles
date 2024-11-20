@@ -116,7 +116,21 @@ clear, clc, close all
         xlabel("x' = (x - $\xi$)/$L_h$","Interpreter","latex")
         ylabel("Nusslet Number $Nu_x$", "Interpreter","latex")
         legend("Theoretical Nusselt Number","Experimental Nusselt Number", "Location","northwest")
-%
+
+        
+%% Short Answer Calculations
+error_nusselt = ((Nu_local - Nu_theo)./Nu_theo) .*100;
+[minNu,maxNu] = bounds(error_nusselt)
+error_hx = ((h_local - hx_theo)./hx_theo) .* 100;
+[minHx,maxHx] = bounds(error_hx)
+error_Ts = abs((((MeasuredTempTop+273.15) - Ts_theo_conv_rad)./Ts_theo_conv_rad) .* 100);
+[minTs,maxTs] = bounds(error_Ts)
+
+error_Ts2 = abs((((MeasuredTempTop+273.15) - Ts_theo_conv)./Ts_theo_conv) .* 100);
+[minTs2,maxTs2] = bounds(error_Ts2)
+
+
+
 
 
 
