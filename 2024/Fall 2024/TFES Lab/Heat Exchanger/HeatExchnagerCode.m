@@ -54,7 +54,7 @@ deltaq = (abs(qh-qc)./(0.5 .* qh + qc)) .* 100; % Watts
 %Calculating Overall heat transfer coefficent
 delta2 = T2 - T3; %degC
 delta1 = T1 - T4; %degC
-deltaTlm = ((delta2+273.15) - (delta1+273.15))./ log((delta2+273.15)/(delta1+273.15)); %Log Mean Temperature differnce K
+deltaTlm = ((delta1+273.15) - (delta2+273.15)) ./ log((delta1+273.15)./(delta2+273.15)); %Log Mean Temperature differnce K
 
 N = 31; % number of tubes
 Di = 0.1940 * 0.0254; %inside diameter in meters
@@ -70,3 +70,8 @@ deltaTmax = T1 - T3; %degC
 epsilonAct = qh ./ (Cmin .* (deltaTmax+273.15));
 epsilonTheo = (1 - exp(-NTU .* (1 - Cr)))./(1 - Cr .* exp(-NTU .* (1 - Cr)));
 delta_epsilon = (abs(epsilonAct - epsilonTheo) ./ epsilonTheo) .* 100;
+
+figure
+subplot(1,2,1)
+hold on
+openfig("EffectivenessNTU.fig")
