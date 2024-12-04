@@ -7,7 +7,7 @@
 % 12/6/24
 %--------------------------------------------------------------------------
 clear, clc, close all
-
+format longG
 %Parsing Data
 Patm = 88.1261; %kPa
 
@@ -49,12 +49,12 @@ Cr = Cmin./Cmax;
 %Calculating heat transfer
 qh = MdotH .* CpH .* deltaTh; % Watts
 qc = MdotC .* CpC .* deltaTc; % Watts
-deltaq = (abs(qh-qc)./(0.5 .* qh + qc)) .* 100; % Watts
+deltaq = (abs(qh-qc)./(0.5 .* (qh + qc))) .* 100; % Watts
 
 %Calculating Overall heat transfer coefficent
 delta2 = T2 - T3; %degC
 delta1 = T1 - T4; %degC
-deltaTlm = ((delta1+273.15) - (delta2+273.15)) ./ log((delta1+273.15)./(delta2+273.15)); %Log Mean Temperature differnce K
+deltaTlm = ((delta1) - (delta2)) ./ log((delta1)./(delta2)); %Log Mean Temperature differnce K
 
 N = 31; % number of tubes
 Di = 0.1940 * 0.0254; %inside diameter in meters
@@ -67,11 +67,43 @@ NTU = (Ui .* Ai) ./ Cmin;
 
 %Calculating efftiveness
 deltaTmax = T1 - T3; %degC
-epsilonAct = qh ./ (Cmin .* (deltaTmax+273.15));
+epsilonAct = qh ./ (Cmin .* (deltaTmax));
 epsilonTheo = (1 - exp(-NTU .* (1 - Cr)))./(1 - Cr .* exp(-NTU .* (1 - Cr)));
 delta_epsilon = (abs(epsilonAct - epsilonTheo) ./ epsilonTheo) .* 100;
 
+f1 = openfig("EffectivenessNTU.fig","invisible");
+ax1 = gca;
+f2 = openfig("EffectivenessNTU.fig","invisible");
+ax2 = gca;
+
 figure
-subplot(1,2,1)
+s1 = subplot(1,2,1);
 hold on
-openfig("EffectivenessNTU.fig")
+fig1 = get(ax1,"children");
+copyobj(fig1,s1);
+hold on
+plot(NTU,epsilonAct, "bo")
+plot(NTU,epsilonTheo, "k+")
+xlabel("NTU")
+ylabel("Effectiveness")
+legend("Measured Effectiveness","Calculated Theoretical Effectiveness")
+s2 = subplot(1,2,2);
+hold on
+fig2 = get(ax2,"children");
+copyobj(fig2,s2);
+xlim([0.18 0.26]);
+ylim([0.16 0.22]);
+plot(NTU,epsilonAct,"ob")
+plot(NTU,epsilonTheo,"k+")
+xlabel("NTU")
+ylabel("Effectiveness")
+sgtitle("Effectivness versus NTU")
+
+
+
+
+
+
+
+
+
