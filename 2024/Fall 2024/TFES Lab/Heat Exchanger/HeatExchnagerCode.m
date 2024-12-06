@@ -71,6 +71,7 @@ epsilonAct = qh ./ (Cmin .* (deltaTmax));
 epsilonTheo = (1 - exp(-NTU .* (1 - Cr)))./(1 - Cr .* exp(-NTU .* (1 - Cr)));
 delta_epsilon = (abs(epsilonAct - epsilonTheo) ./ epsilonTheo) .* 100;
 
+%Plotting effectivness vs NTU
 f1 = openfig("EffectivenessNTU.fig","invisible");
 ax1 = gca;
 f2 = openfig("EffectivenessNTU.fig","invisible");
@@ -100,10 +101,27 @@ ylabel("Effectiveness")
 sgtitle("Effectivness versus NTU")
 
 
+%Calculating heat transfer due to radiation and convection
+Ts = T5 + 273.15; %K
+Tinf = T6 + 273.15; %K
+Tf = (1/2) .* (Ts + Tinf); %K
+L = 0.2286; %meters
+Ds = 0.053848; %meters
 
+for i = 1:length(Tf)
+    [rho(i),mu(i),k(i),Cp(i)] = AirProperties(Tf(i),Patm*1000);
+end
 
+beta = 1./Tf;
+v = mu./rho;
+alpha = k./(rho.*Cp);
+Rad = (9.81 .* beta .* (Ts-Tinf) .* (Ds.^3))./(v.*alpha);
 
+NudBar = 0.48.*(Rad.^(1/4));
+hBar = (k.*NudBar)./Ds;
+sigma = 5.6703 * (10^-8);
+eps = 0.95;
 
-
-
+qconv = hBar .* pi .* Ds .* L .* (Ts-Tinf);
+qrad = eps .* sigma .* ((Ts.^4)-(Tinf.^4)) .* pi .* Ds .* L;
 
