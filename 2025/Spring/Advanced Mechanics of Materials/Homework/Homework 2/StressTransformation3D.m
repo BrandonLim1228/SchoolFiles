@@ -1,8 +1,8 @@
 function [tensorP] = StressTransformation3D(A,transformMatrix)
 
-l = transformMatrix(:,1)
-m = transformMatrix(:,2)
-n = transformMatrix(:,3)
+l = transformMatrix(:,1);
+m = transformMatrix(:,2);
+n = transformMatrix(:,3);
 
 sigmaX = A(1,1);
 sigmaY = A(2,2);

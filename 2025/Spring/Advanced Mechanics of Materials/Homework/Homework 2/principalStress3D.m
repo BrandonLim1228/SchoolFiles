@@ -2,7 +2,6 @@ function [sigma1, sigma2, sigma3, tauMax] = principalStress3D(A)
 
 [V,D] = eig(A); %Finding principal stresses using eigen values
 
-if length(A) == 3
 sigmaVec = sort([D(1), D(5), D(9)]);
 
 %Principal Stress Output
@@ -46,38 +45,5 @@ sigma2 = sprintf("Sigma2=") + num2str(s2) + sprintf(", [l=%s, m=%s, n=%s]",num2s
 sigma3 = sprintf("Sigma3=") + num2str(s3) + sprintf(", [l=%s, m=%s, n=%s]",num2str(direc3(1)),num2str(direc3(2)),num2str(direc3(3)));
 tauMax = (1/2) * (s1 - s3);
 
-end 
 
-if length(A) == 2
-sigmaVec = sort([D(1), D(4)]);
-
-%Principal Stress Output
-s1 = sigmaVec(2);
-s2 = sigmaVec(1);
-s3 = "N/A";
-
-%Direction output 
-d1 = find(D == s1);
-d2 = find(D == s2);
-
-%Finding directions
-if d1 == 1
-    direc1 = V(:,1);
-else
-    direc1 = V(:,2);
-end
-
-if d2 == 1
-    direc2 = V(:,1);
-else
-    direc2 = V(:,2);
-end
-
-%Outputs
-sigma1 = sprintf("Sigma1=") + num2str(s1);
-sigma2 = sprintf("Sigma2=") + num2str(s2);
-sigma3 = sprintf("Sigma3=") + num2str(s3);
-tauMax = (1/2) * (s1 - s2);
-
-end 
 end
