@@ -262,6 +262,7 @@ clear, clc, close all
             ylabel("y-coord [mm]")
             title("Reconstructed Airfoils with Smoothed Data")
 
+writematrix(Blue_Airfoil_Sorted_Data_Smoothed',"BlueAirfoil.txt")
 
 %% JPEG compared to final data
 
