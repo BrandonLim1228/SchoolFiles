@@ -25,7 +25,7 @@ Yp_CO = 0.0755;
 Yp_H20 = 0.09699;
 Yp_N2 = 0.7089;
 
-%Reactants
+%Reactant enthalpys
 hs_C2H4_To = 32.847 * (1/C2H4) * 1000; %kJ/kg
 hf_C2H4_Tref = 52.467 * (1/C2H4) * 1000; %kJ/Kg
 hs_O2_To = 15.835 * (1/O2) * 1000; %kJ/kg
@@ -33,12 +33,12 @@ hf_O2_Tref = 0 * 1000; %kJ/kg
 hs_N2_To = 15.046 * (1/N2) * 1000; %kJ/kg
 hf_N2_Tref = 0 * 1000; %kJ/kg
 
-%Products
+%Product enthalpys
 hf_CO2_Tref = -393.522 * (1/CO2) * 1000; %kJ/kg
 hf_CO_Tref = -110.527 * (1/CO) * 1000; %kJ/kg
 hf_H2O_Tref = -241.826 * (1/H2O) * 1000; %kJ/kg
 
-%Importing Janaf Table Data from TXT file
+%Importing Janaf Table Data from TXT files downloaded from the website
 H2O_Prop = importdata("H2O Properties.txt");
 hs_H2O_T = H2O_Prop.data(:,5) .* (1./H2O) .* 1000;
 CO2_Prop = importdata("CO2 Properties.txt");
@@ -49,17 +49,21 @@ N2_Prop = importdata("N2 Properties.txt");
 hs_N2_T = N2_Prop.data([2:3,5:6,8,10:end],1) .* (1./N2) .* 1000;
 T = H2O_Prop.data(:,1);
 
+%Calculating LHS 
 LHS = Yr_C2H4 * (hs_C2H4_To + hf_C2H4_Tref) + Yr_O2 * (hs_O2_To + hf_O2_Tref) + Yr_N2 * (hs_N2_To + hf_N2_Tref);
 
+%Calculating RHS using table values
 for i = 1:length(hs_CO2_T)
     RHS(i) = Yp_CO2 * (hs_CO2_T(i) + hf_CO2_Tref) + Yp_CO * (hs_CO_T(i) + hf_CO_Tref) + Yp_H20 * (hs_H2O_T(i) + hf_H2O_Tref) + Yp_N2 * (hs_N2_T(i) + hf_N2_Tref);
 end
 
+%Creating Table Variables
 LHS = LHS .* ones(length(RHS),1);
 RHS = RHS';
 DIFF = LHS - RHS;
+%Finding Index where the Difference switches from positive to negative (i.e where zero difference should be) 
 index = find(DIFF < 0);
-
+%Calcualting Tad from interpolation
 Tad = (0 - DIFF(index(1)-1))/(DIFF(index(1)) - DIFF(index(1)-1)) * (T(index(1)) - T(index(1)-1)) + T(index(1)-1)
-
+%Creating table values
 Iterations = table(T, LHS ,RHS, DIFF, hs_CO2_T, hs_CO_T, hs_H2O_T, hs_N2_T)
