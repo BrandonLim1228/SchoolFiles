@@ -11,10 +11,11 @@
 %--------------------------------------------------------------------------
 clear, clc, close all
 % Wing and Body Geometry
-    Cr = 330; %mm
     b = 287; %mm
+    Cr = 330; %mm
     s = b/2; %mm
-    inner_sweep_angle = 25; %deg
+    A = 65; %deg
+    theta = 90-A; %deg
 
 % Importing image 
     Airfoil_Image = flipud(imread("Delta Wing Airfoil Coordinates.jpg"));
@@ -98,7 +99,8 @@ clear, clc, close all
         end
     end
 
-% Sorting y = 0 airfoil (blue) data in the clockwise direction starting at x = 0
+% Sorting y = 0 airfoil (blue) data in the counter-clockwise direction
+% starting at the trailing edge
     n = 1;
     k = 1;
     for i = 1:length(blueY)
@@ -113,16 +115,16 @@ clear, clc, close all
             k = k + 1;
         end
     end
-    % Sorting y = 0 airfoil top data into ascending order based on X
-        [BTopX,Itop] = sort(blueXTop);
+    % Sorting y = 0 airfoil top data into descending order based on X
+        [BTopX,Itop] = sort(blueXTop,"descend");
         BTopY = blueYTop(Itop);
-    % Sorting y = 0 airfoil bottom data into descending order based on X
-        [BBotX,Ibot] = sort(blueXBot,"descend");
+    % Sorting y = 0 airfoil bottom data into ascending order based on X
+        [BBotX,Ibot] = sort(blueXBot);
         BBotY = blueYBot(Ibot);
     % Concatenating sorted top and bottom data 
         Blue_Airfoil_Sorted_Data_Raw = [BTopX,BBotX;BTopY,BBotY];
 
-% Sorting y = 1/3s airfoil (orange) data in the clockwise direction starting at x = 0
+% Sorting y = 1/3s airfoil (orange) data in the counter clockwise direction starting at the trailing edge
     n = 1;
     k = 1;
     for i = 1:length(orangeY)
@@ -137,16 +139,16 @@ clear, clc, close all
             k = k + 1;
         end
     end
-    % Sorting y = 1/3s airfoil top data into ascending order based on X
-        [OTopX,Itop] = sort(orangeXTop);
+    % Sorting y = 1/3s airfoil top data into descending order based on X
+        [OTopX,Itop] = sort(orangeXTop,"descend");
         OTopY = orangeYTop(Itop);
-    % Sorting y = 1/3s airfoil bottom data into descending order based on X
-        [OBotX,Ibot] = sort(orangeXBot,"descend");
+    % Sorting y = 1/3s airfoil bottom data into ascending order based on X
+        [OBotX,Ibot] = sort(orangeXBot);
         OBotY = orangeYBot(Ibot);
     % Concatenating sorted top and bottom data 
         Orange_Airfoil_Sorted_Data_Raw = [OTopX,OBotX;OTopY,OBotY];
 
-% Sorting y = 2/3s airfoil (green) data in the clockwise direction starting at x = 0
+% Sorting y = 2/3s airfoil (green) data in the counter clockwise direction starting at the trailing edge
     n = 1;
     k = 1;
     for i = 1:length(greenY)
@@ -161,37 +163,90 @@ clear, clc, close all
             k = k + 1;
         end
     end
-    % Sorting y = 2/3s airfoil top data into ascending order based on X
-        [GTopX,Itop] = sort(greenXTop);
+    % Sorting y = 2/3s airfoil top data into descending order based on X
+        [GTopX,Itop] = sort(greenXTop,"descend");
         GTopY = greenYTop(Itop);
-    % Sorting y = 2/3s airfoil bottom data into descending order based on X
-        [GBotX,Ibot] = sort(greenXBot,"descend");
+    % Sorting y = 2/3s airfoil bottom data into ascending order based on X
+        [GBotX,Ibot] = sort(greenXBot);
         GBotY = greenYBot(Ibot);
     % Concatenating sorted top and bottom data 
         Green_Airfoil_Sorted_Data_Raw = [GTopX,GBotX;GTopY,GBotY];
 
-% Smoothing Data
-    BWS = 8; % "Blue Window Size" - Window size for the averaging of blue data points
+% Smoothing Data Using a moving average 
+    if (rem(length(Blue_Airfoil_Sorted_Data_Raw),2)) == 1
+        blueLength = length(Blue_Airfoil_Sorted_Data_Raw)-1;
+    else 
+        blueLength = length(Blue_Airfoil_Sorted_Data_Raw);
+    end
+    if (rem(length(Orange_Airfoil_Sorted_Data_Raw),2)) == 1
+        orangeLength = length(Orange_Airfoil_Sorted_Data_Raw)-1;
+    else 
+        orangeLength = length(Orange_Airfoil_Sorted_Data_Raw);
+    end
+    if (rem(length(Green_Airfoil_Sorted_Data_Raw),2)) == 1
+        greenLength = length(Green_Airfoil_Sorted_Data_Raw)-1;
+    else 
+        greenLength = length(Green_Airfoil_Sorted_Data_Raw);
+    end
+
+    BWS = 24; % "Blue Window Size" - Window size for the averaging of blue data points
     %Averaging over every window size of data
-    for i = 1:((length(Blue_Airfoil_Sorted_Data_Raw) - 1)/BWS)
+    for i = 1:(blueLength/BWS)
         Blue_Airfoil_Sorted_Data_Smoothed(:,i) = mean(Blue_Airfoil_Sorted_Data_Raw(:,((i-1)*BWS + 1):((i-1)*BWS + BWS)),2);
     end
-        BTrailingEdgeIndice = find(Blue_Airfoil_Sorted_Data_Smoothed(2,:) < 0);
-        Blue_Airfoil_Sorted_Data_Smoothed = [0,Blue_Airfoil_Sorted_Data_Smoothed(1,1:BTrailingEdgeIndice(1)-1),330,Blue_Airfoil_Sorted_Data_Smoothed(1,BTrailingEdgeIndice(1):end), 0; 0,Blue_Airfoil_Sorted_Data_Smoothed(2,1:BTrailingEdgeIndice(1)-1),0,Blue_Airfoil_Sorted_Data_Smoothed(2,BTrailingEdgeIndice(1):end),0];
-    
+        
     OWS = 8; % "Orange Window Size" - Window size for the averaging of orange data points
     %Averaging over every window size of data
-    for i = 1:((length(Orange_Airfoil_Sorted_Data_Raw))/OWS)
+    for i = 1:(orangeLength/OWS)
         Orange_Airfoil_Sorted_Data_Smoothed(:,i) = mean(Orange_Airfoil_Sorted_Data_Raw(:,((i-1)*OWS + 1):((i-1)*OWS + OWS)),2);
     end
-        OTrailingEdgeIndice = find(Orange_Airfoil_Sorted_Data_Smoothed(2,:) < 0);
-        Orange_Airfoil_Sorted_Data_Smoothed = [((1/3) * s)/tand(inner_sweep_angle), Orange_Airfoil_Sorted_Data_Smoothed(1,1:OTrailingEdgeIndice(1)-1),Orange_Airfoil_Sorted_Data_Smoothed(1,OTrailingEdgeIndice(1):end), ((1/3) * s)/tand(inner_sweep_angle); 0,Orange_Airfoil_Sorted_Data_Smoothed(2,1:OTrailingEdgeIndice(1)-1),Orange_Airfoil_Sorted_Data_Smoothed(2,OTrailingEdgeIndice(1):end),0];
     
     GWS = 6; % "Green Window Size" - Window size for the averaging of green data points
     %Averaging over every window size of data
-    for i = 1:((length(Green_Airfoil_Sorted_Data_Raw))/GWS)
+    for i = 1:(greenLength/GWS)
         Green_Airfoil_Sorted_Data_Smoothed(:,i) = mean(Green_Airfoil_Sorted_Data_Raw(:,((i-1)*GWS + 1):((i-1)*GWS + GWS)),2);
     end
+
+% Calculating Leading Edge Points
+    LE_blueX = 0;%mm
+    LE_blueY = 0; %mm
+
+    LE_orangePY = (1/3) * s; %y position in planform geometry axis on the leading edge (different than y in airfoil coordinate system) mm
+    LE_orangeX = LE_orangePY/tand(theta); %x position in planform geometry axis on leading edge mm 
+    LE_orangeY = 0; %mm
+
+    LE_greenPY = (2/3) * s; %y position in planform geometry axis on the leading edge (different than y in airfoil coordinate system) mm 
+    LE_greenX = LE_greenPY/tand(theta); %x position in planform geometry axis on leading edge mm
+    LE_greenY = 0;%mm
+
+% Calculating Trailing Edge Points
+    TE_blueX = 330; %mm
+    TE_blueY_Upper = 0.5; %mm - approximated from jpeg image
+    TE_blueY_Lower = -0.5; %mm - approximated from peg image
+    % 
+    TE_orangeX = 308; %mm - found from wing_geo_plot.m
+    TE_orangeY_Upper = 0.25; %mm - approximated form jpeg image
+    TE_orangeY_Lower = -0.25; %mm - approximated form jpeg image
+
+    % TE_greenX = 330; %mm - found from wing_geo_plot.m
+    TE_greenX = 328; %mm - found from wing_geo_plot.m
+    TE_greenY_Upper = 0.25; %mm - approximated form jpeg image
+    TE_greenY_Lower = -0.25; %mm - approximated form jpeg image
+    
+% Final smoothed data with trailing and leading edge points
+    BIneg = find(Blue_Airfoil_Sorted_Data_Smoothed(2,:) < 0); %index where blue airfoil y data switches from positive to negative
+    Blue_Airfoil_Sorted_Data_Smoothed = [TE_blueX, Blue_Airfoil_Sorted_Data_Smoothed(1,1:(BIneg(1)-1)), LE_blueX, Blue_Airfoil_Sorted_Data_Smoothed(1,BIneg(1):end), TE_blueX ; TE_blueY_Upper, Blue_Airfoil_Sorted_Data_Smoothed(2,1:(BIneg(1)-1)), LE_blueY, Blue_Airfoil_Sorted_Data_Smoothed(2,BIneg(1):end),TE_blueY_Lower];
+    
+    OIneg = find(Orange_Airfoil_Sorted_Data_Smoothed(2,:) < 0); %index where orange airfoil y data switches from positive to negative
+    Orange_Airfoil_Sorted_Data_Smoothed = [TE_orangeX, Orange_Airfoil_Sorted_Data_Smoothed(1,1:(OIneg(1)-1)), LE_orangeX, Orange_Airfoil_Sorted_Data_Smoothed(1,OIneg(1):end), TE_orangeX ; TE_orangeY_Upper, Orange_Airfoil_Sorted_Data_Smoothed(2,1:(OIneg(1)-1)), LE_orangeY, Orange_Airfoil_Sorted_Data_Smoothed(2,OIneg(1):end),TE_orangeY_Lower];
+
+    GIneg = find(Green_Airfoil_Sorted_Data_Smoothed(2,:) < 0); %index where green airfoil y data switches from positive to negative
+    Green_Airfoil_Sorted_Data_Smoothed = [TE_greenX, Green_Airfoil_Sorted_Data_Smoothed(1,1:(GIneg(1)-1)), LE_greenX, Green_Airfoil_Sorted_Data_Smoothed(1,GIneg(1):end), TE_greenX ; TE_greenY_Upper, Green_Airfoil_Sorted_Data_Smoothed(2,1:(GIneg(1)-1)), LE_greenY, Green_Airfoil_Sorted_Data_Smoothed(2,GIneg(1):end),TE_greenY_Lower];
+
+%Saving Data to Text Files
+    writematrix(Blue_Airfoil_Sorted_Data_Smoothed',"0_Airfoil.txt")
+    writematrix(Orange_Airfoil_Sorted_Data_Smoothed',"033s_Airfoil.txt")
+    writematrix(Green_Airfoil_Sorted_Data_Smoothed',"067s_Airfoil.txt")
 
 % Plot Comparrison 
     subplot(2,2,1)
@@ -262,7 +317,36 @@ clear, clc, close all
             ylabel("y-coord [mm]")
             title("Reconstructed Airfoils with Smoothed Data")
 
-writematrix(Blue_Airfoil_Sorted_Data_Smoothed',"BlueAirfoil.txt")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 %% JPEG compared to final data
 
@@ -298,6 +382,35 @@ writematrix(Blue_Airfoil_Sorted_Data_Smoothed',"BlueAirfoil.txt")
             xlabel("x-coord [mm]")
             ylabel("y-coord [mm]")
             title("Reconstructed Airfoils with Smoothed Data")
+
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
 %% Individual Plotting
     % Opening raw image jpeg
         figure
@@ -373,3 +486,4 @@ writematrix(Blue_Airfoil_Sorted_Data_Smoothed',"BlueAirfoil.txt")
             xlabel("X-Coordinates [mm]")
             ylabel("Y-Coordinates [mm]")
             title("Final Reconstructed Airfoils with Smoothed Data")
+
