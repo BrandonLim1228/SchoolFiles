@@ -195,7 +195,7 @@ clear, clc, close all
         Blue_Airfoil_Sorted_Data_Smoothed(:,i) = mean(Blue_Airfoil_Sorted_Data_Raw(:,((i-1)*BWS + 1):((i-1)*BWS + BWS)),2);
     end
         
-    OWS = 8; % "Orange Window Size" - Window size for the averaging of orange data points
+    OWS = 14; % "Orange Window Size" - Window size for the averaging of orange data points
     %Averaging over every window size of data
     for i = 1:(orangeLength/OWS)
         Orange_Airfoil_Sorted_Data_Smoothed(:,i) = mean(Orange_Airfoil_Sorted_Data_Raw(:,((i-1)*OWS + 1):((i-1)*OWS + OWS)),2);
