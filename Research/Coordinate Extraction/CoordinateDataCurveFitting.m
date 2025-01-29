@@ -10,7 +10,7 @@
 % 1/25/2025
 %--------------------------------------------------------------------------
 %% Y = 0 airfoil
-clear, clc, close all
+clear, clc
 format longg
 
 %X-vector for plotting
@@ -65,7 +65,7 @@ format longg
     writematrix(Y0_Airfoil_Final,"Yequ0_Airfoil_Official")
 
 %% Y = 1/3s airfoil
-clear, clc, close all
+clear, clc
 format longg
 
 x = linspace(0,330,10000);
@@ -77,7 +77,16 @@ x = linspace(0,330,10000);
     Y03s_Top_Data = Y03s_airfoil_data(1:Y03sindex_0,:); Y03s_Bot_Data = Y03s_airfoil_data(Y03sindex_0:end,:); %Separating data into upper and lower airfoil
 
 %Fitting curves to the airfoil
-   
+    length03T = length(Y03s_Top_Data); length03B = length(Y03s_Bot_Data);
+    eT = ones(1,50); eB = ones(1,46)
+    dT = ones(1,50); dB = ones(1,50);
+    cT = 0.5*ones(1,30); cB = ones(1,30);
+    bT = 2*ones(1,15); bB = 20*ones(1,15)
+    aT = 10*ones(1,4); aB = 30*ones(1,4);
+    weightT = [30,eT,dT,cT,bT,aT,40]; weightB = [60,aB,bB,cB,dB,eB,40];
+
+    WT = fit(Y03s_Top_Data(:,1),Y03s_Top_Data(:,2),"poly9","Weights",weightT); WB = fit(Y03s_Bot_Data(:,1),Y03s_Bot_Data(:,2),"poly9","Weights",weightB); 
+
     pT4 = polyfit(Y03s_Top_Data(:,1),Y03s_Top_Data(:,2),4);
     yt4 = pT4(1) .* x.^4 + pT4(2) .* x.^3 + pT4(3) .* x.^2 + pT4(4) .* x + pT4(5);
 
@@ -98,16 +107,27 @@ x = linspace(0,330,10000);
 
 %Plotting
     figure
-    plot(Y03s_Top_Data(:,1),Y03s_Top_Data(:,2),"linestyle","none","marker",'o',"color",[0.8500 0.3250 0.0980]) % Y0_airfoil raw data points
-    daspect([1,1,1]); ylim([-100 100]);xlim([0,350]); %1:1 aspect ratio
+    plot(Y03s_airfoil_data(:,1),Y03s_airfoil_data(:,2),"linestyle","none","marker",'o',"color",[0.8500 0.3250 0.0980]) % Y0_airfoil raw data points
+    daspect([1,1,1]); ylim([-100 100]);xlim([0,350]); legend off; %1:1 aspect ratio
+
+
     hold on; plot(x,yt4,"g");
     hold on; plot(x,yt5,"r");
     hold on; plot(x,yt6,"b");
     hold on; plot(x,yt7,"color",[0.3010 0.7450 0.9330]);
     hold on; plot(x,yt8,"color",[0.6350 0.0780 0.1840]);
     hold on; plot(x,yt9,"color",[0.4940 0.1840 0.5560]);
-legend off;
+    hold on; plot(WT,"k")
+    hold on; plot(WB,"k")
 
+    xVecUpper = linspace(308,((1/3)*(287/2))/tand(25),123); xVecLower = linspace(((1/3)*(287/2))/tand(25),308,123);
+    y03sUpper = (3.02088946901769*(10^-17)) .* (xVecUpper.^9) + (-5.72703536591023*(10^-14)) .* (xVecUpper.^8) + (4.76108333415575*(10^-11)) .* (xVecUpper.^7) + (-2.27703072174622*(10^-8)) .* (xVecUpper.^6) + (6.90175215465663*(10^-6)) .* (xVecUpper.^5) + (-0.00137455976249598) .* (xVecUpper.^4)  + 0.179863981053503 .* (xVecUpper.^3) + -14.9141704302568 .* (xVecUpper.^2) + 711.659768902142 .* (xVecUpper) + -14901.0009297264;
+    y03sLower = (-3.06687441918267*(10^-17)) .* (xVecLower.^9) + (5.79268996267856*(10^-14)) .* (xVecLower.^8) + (-4.80038227594407*(10^-11)) .* (xVecLower.^7) + (2.28986549489292*(10^-8)) .* (xVecLower.^6) + (-6.9267648717501*(10^-6)) .* (xVecLower.^5) + (0.00137754491290466) .* (xVecLower.^4)  + -0.180066313904933 .* (xVecLower.^3) + 14.9158568752613 .* (xVecLower.^2) + -710.518577548888 .* (xVecLower) + 14828.0924184241;
+
+    
+
+
+clc
 
 
 

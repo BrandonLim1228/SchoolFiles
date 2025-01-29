@@ -32,6 +32,10 @@ v12 = 0.426;
 v13 = 0.451;
 v23 = 0.697;
 
-[sigma1, sigma2, sigma3, tauMax] = principalStress3D(A)
+[sigma1, ~, ~, ~] = principalStress3D(A)
 
-[epsilonTensor] = StrainTensorfromStressTensor(E1, E2, E3, v12, v13, v23, G13, G23, G12,A)
+[epsilonVec] = StrainTensorfromStressTensor(E1, E2, E3, v12, v13, v23, G13, G23, G12,A);
+
+epsilonTensor = [epsilonVec(1) epsilonVec(6)*(0.5) epsilonVec(5)*(0.5); epsilonVec(6)*0.5 epsilonVec(2) epsilonVec(4)*0.5; epsilonVec(5)*0.5 epsilonVec(4)*0.5 epsilonVec(3)]
+
+[epsilon1, ~, ~, ~] = PrincipalStrain3D(epsilonTensor)
