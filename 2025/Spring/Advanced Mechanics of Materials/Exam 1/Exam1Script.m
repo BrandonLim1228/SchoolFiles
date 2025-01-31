@@ -2,6 +2,8 @@
 
 clear, clc, close all
 
-A = [0 3 0; 3 4 0; 0 0 7];
-[sigma1, sigma2, sigma3, tauMax] = principalStress3D(A)
+A = [30 0 20; 0 0 0; 20 0 0]
+[sigma1, sigma2, sigma3, ~] = principalStress3D(A)
 
+transformVec = [cosd(45), cosd(45) cosd(45)]
+[sigma, tau] = NormalXShearPerpendicular(A,transformVec)
