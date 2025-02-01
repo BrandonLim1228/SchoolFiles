@@ -1,6 +1,7 @@
 clear, clc
 % Importing Data
 Y0_airfoil_data = readmatrix("Yequ0_Airfoil_Official.txt");
+Y03s_airfoil_data = readmatrix("Yequ03s_Airfoil_Official.txt");
 
 % Importing image
 Airfoil_Image = flipud(imread("Delta Wing Airfoil Coordinates.jpg"));
@@ -22,6 +23,8 @@ title("JPEG Image")
 
 subplot(2,1,2)
 plot(Y0_airfoil_data(:,1),Y0_airfoil_data(:,2), "linewidth", 1.5, "Color",[0 0.4470 0.7410]) %y=0 airfoil
+hold on 
+plot(Y03s_airfoil_data(:,1),Y03s_airfoil_data(:,2), "linewidth", 1.5, "Color",[0.8500 0.3250 0.0980]) %y=03s airfoil
 xlim(xlims);ylim(ylims);
 %Updating image aspect ratio to match axis alignment
 daspect([1, ((abs(yMax) + abs(yMin))/529) * (1518/(abs(xMax) + abs(xMin))), 1])
