@@ -216,7 +216,7 @@ clear, clc, close all
     LE_orangeY = 0; %mm
 
     LE_greenPY = (2/3) * s; %y position in planform geometry axis on the leading edge (different than y in airfoil coordinate system) mm 
-    LE_greenX = LE_greenPY/tand(theta); %x position in planform geometry axis on leading edge mm
+    LE_greenX = (LE_greenPY/tand(theta)); %x position in planform geometry axis on leading edge mm
     LE_greenY = 0;%mm
 
 % Calculating Trailing Edge Points

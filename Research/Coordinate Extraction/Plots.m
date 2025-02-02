@@ -1,4 +1,4 @@
-clear, clc
+
 % Importing Data
 Y0_airfoil_data = readmatrix("Yequ0_Airfoil_Official.txt");
 Y03s_airfoil_data = readmatrix("Yequ03s_Airfoil_Official.txt");

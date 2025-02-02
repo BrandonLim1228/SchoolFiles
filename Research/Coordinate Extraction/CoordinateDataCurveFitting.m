@@ -58,7 +58,7 @@ format longg
     eT = ones(1,50); eB = 20 * ones(1,46);
     dT = ones(1,50); dB = ones(1,50);
     cT = 0.5*ones(1,30); cB = ones(1,30);
-    bT = 2*ones(1,15); bB = 20*ones(1,15)
+    bT = 2*ones(1,15); bB = 20*ones(1,15);
     aT = 5*ones(1,4); aB = 30*ones(1,4);
     weightT = [30,eT,dT,cT,bT,aT,40]; weightB = [60,aB,bB,cB,dB,eB,40];
     %Establishing weights for initial data
@@ -77,11 +77,11 @@ format longg
     hold on; plot(yUpper_MD,"k"); hold on; plot(yLower_MD,"k") %Major Data
     hold on; plot(yUpper_ID); hold on; plot(yLower_ID); %Inital Data
 
-    xVecUpperMD = linspace(307,109,118); xVecLowerMD = linspace(109,307,118); %X values for major data 
+    xVecUpperMD = linspace(307,109,115); xVecLowerMD = linspace(109,307,115); %X values for major data 
     %Y values for major data
     y03sUpperMD = (MDuP(1)) .* (xVecUpperMD.^9) + (MDuP(2)) .* (xVecUpperMD.^8) + (MDuP(3)) .* (xVecUpperMD.^7) + (MDuP(4)) .* (xVecUpperMD.^6) + (MDuP(5)) .* (xVecUpperMD.^5) + (MDuP(6)) .* (xVecUpperMD.^4)  + MDuP(7) .* (xVecUpperMD.^3) + MDuP(8) .* (xVecUpperMD.^2) + MDuP(9) .* (xVecUpperMD) + MDuP(10);
     y03sLowerMD = (MDlP(1)) .* (xVecLowerMD.^9) + (MDlP(2)) .* (xVecLowerMD.^8) + (MDlP(3)) .* (xVecLowerMD.^7) + (MDlP(4)) .* (xVecLowerMD.^6) + (MDlP(5)) .* (xVecLowerMD.^5) + (MDlP(6)) .* (xVecLowerMD.^4)  + MDlP(7) .* (xVecLowerMD.^3) + MDlP(8) .* (xVecLowerMD.^2) + MDlP(9) .* (xVecLowerMD) + MDlP(10);
-    xVecUpperID = linspace(106,103,5); xVecLowerID = linspace(103,107.5,5);  %X values for initial data
+    xVecUpperID = linspace(106,103,8); xVecLowerID = linspace(103,107.5,8);  %X values for initial data
     %Y values for inital data
     y03sUpperID = (IDuP(1)) .* (xVecUpperID.^5) + (IDuP(2)) .* (xVecUpperID.^4)  + IDuP(3) .* (xVecUpperID.^3) + IDuP(4) .* (xVecUpperID.^2) + IDuP(5) .* (xVecUpperID) + IDuP(6);
     y03sLowerID = (IDlP(1)) .* (xVecLowerID.^4)  + IDlP(2) .* (xVecLowerID.^3) + IDlP(3) .* (xVecLowerID.^2) + IDlP(4) .* (xVecLowerID) + IDlP(5);
@@ -89,4 +89,6 @@ format longg
     A = ((1/3)*(287/2))/tand(25); %Leading Edge x-Point
     Y03s_Airfoil_Final = [308, xVecUpperMD, xVecUpperID, A, xVecLowerID, xVecLowerMD, 308; 0.25, y03sUpperMD, y03sUpperID, 0, y03sLowerID, y03sLowerMD, -0.25]';
     writematrix(Y03s_Airfoil_Final,"Yequ03s_Airfoil_Official")
+
+%% y = 2/3s airfoil
 
