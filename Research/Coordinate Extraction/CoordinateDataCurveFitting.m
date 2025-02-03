@@ -21,7 +21,7 @@ format longg
     Y0_Top_Data = Y0_airfoil_data(1:Y0index_0,:); Y0_Bot_Data = Y0_airfoil_data(Y0index_0:end,:); %Separating data into upper and lower airfoil
 
 %Fitting curves to the airfoil
-    %Weighted 5th order fit (First and Last indicies are weighted higher to force the curve to meet these points
+    %Establishing weights for fitting data 
     weightT = [20, 0.1*ones(1,length(Y0_Top_Data(:,1))-2), 20]; weightB = [40, 0.01*ones(1,length(Y0_Bot_Data(:,1))-2), 40]; %Weights for data points. More emphasis on first and last points than intermediate
     yUpper = fit(Y0_Top_Data(:,1),Y0_Top_Data(:,2),'poly5','Weights',weightT); yLower = fit(Y0_Bot_Data(:,1),Y0_Bot_Data(:,2),'poly5','Weights',weightB); clc; %Fitting a curve based on weights
     yUP = coeffvalues(yUpper); yLP = coeffvalues(yLower); %polynomials of fit
@@ -76,19 +76,67 @@ format longg
     daspect([1,1,1]); ylim([-100 100]); xlim([0,350]); legend off; %1:1 aspect ratio
     hold on; plot(yUpper_MD,"k"); hold on; plot(yLower_MD,"k") %Major Data
     hold on; plot(yUpper_ID); hold on; plot(yLower_ID); %Inital Data
+    %Axis labels and title
+    title("Y=033s Airfoil Coordinates Curve Fitting"); xlabel("x-coordinate [mm]"); ylabel("y-coorddinate [mm]"); legend off;
 
-    xVecUpperMD = linspace(307,109,115); xVecLowerMD = linspace(109,307,115); %X values for major data 
+%Saving final data points
+    %X values for major data
+    xVecUpperMD = linspace(307,109,119); xVecLowerMD = linspace(109,307,119); 
     %Y values for major data
     y03sUpperMD = (MDuP(1)) .* (xVecUpperMD.^9) + (MDuP(2)) .* (xVecUpperMD.^8) + (MDuP(3)) .* (xVecUpperMD.^7) + (MDuP(4)) .* (xVecUpperMD.^6) + (MDuP(5)) .* (xVecUpperMD.^5) + (MDuP(6)) .* (xVecUpperMD.^4)  + MDuP(7) .* (xVecUpperMD.^3) + MDuP(8) .* (xVecUpperMD.^2) + MDuP(9) .* (xVecUpperMD) + MDuP(10);
     y03sLowerMD = (MDlP(1)) .* (xVecLowerMD.^9) + (MDlP(2)) .* (xVecLowerMD.^8) + (MDlP(3)) .* (xVecLowerMD.^7) + (MDlP(4)) .* (xVecLowerMD.^6) + (MDlP(5)) .* (xVecLowerMD.^5) + (MDlP(6)) .* (xVecLowerMD.^4)  + MDlP(7) .* (xVecLowerMD.^3) + MDlP(8) .* (xVecLowerMD.^2) + MDlP(9) .* (xVecLowerMD) + MDlP(10);
-    xVecUpperID = linspace(106,103,8); xVecLowerID = linspace(103,107.5,8);  %X values for initial data
+    %X values for initial data
+    xVecUpperID = linspace(106,103,4); xVecLowerID = linspace(103,107.5,4);  
     %Y values for inital data
     y03sUpperID = (IDuP(1)) .* (xVecUpperID.^5) + (IDuP(2)) .* (xVecUpperID.^4)  + IDuP(3) .* (xVecUpperID.^3) + IDuP(4) .* (xVecUpperID.^2) + IDuP(5) .* (xVecUpperID) + IDuP(6);
     y03sLowerID = (IDlP(1)) .* (xVecLowerID.^4)  + IDlP(2) .* (xVecLowerID.^3) + IDlP(3) .* (xVecLowerID.^2) + IDlP(4) .* (xVecLowerID) + IDlP(5);
 
-    A = ((1/3)*(287/2))/tand(25); %Leading Edge x-Point
-    Y03s_Airfoil_Final = [308, xVecUpperMD, xVecUpperID, A, xVecLowerID, xVecLowerMD, 308; 0.25, y03sUpperMD, y03sUpperID, 0, y03sLowerID, y03sLowerMD, -0.25]';
+    LEy03 = ((1/3)*(287/2))/tand(25); %Leading Edge x-Point
+    Y03s_Airfoil_Final = [308, xVecUpperMD, xVecUpperID, LEy03, xVecLowerID, xVecLowerMD, 308; 0.25, y03sUpperMD, y03sUpperID, 0, y03sLowerID, y03sLowerMD, -0.25]';
     writematrix(Y03s_Airfoil_Final,"Yequ03s_Airfoil_Official")
 
 %% y = 2/3s airfoil
+clear, clc, close all
+format longg
+
+%Reading In Airfoil Data
+    Y06s_airfoil_data = readmatrix("067s_Airfoil_unfiltered.txt");
+
+%Sepparating data in upper and lower airfoil
+    Y06sindex_0 = find(Y06s_airfoil_data(:,2) == 0); %Findig leading edge index to split the airfoil
+    Y06s_Top_Data = Y06s_airfoil_data(1:Y06sindex_0,:); Y06s_Bot_Data = Y06s_airfoil_data(Y06sindex_0:end,:); %Separating data into upper and lower airfoil
+
+%Fitting Curves to the airfoil
+    %Establishing weights for fitting major data
+    weightT = [40, ones(1,220), 10]; weightB = [1,ones(1,231),40];
+    %Weighted fitting to the data    
+    yUpper_MD = fit(Y06s_Top_Data(:,1),Y06s_Top_Data(:,2),"poly6","Weight",weightT); MDuP = coeffvalues(yUpper_MD); %Good for x = 213.5 - end
+    yLower_MD = fit(Y06s_Bot_Data(:,1),Y06s_Bot_Data(:,2),"poly6","Weight",weightB); MDlP = coeffvalues(yLower_MD); %Good for x = 219 - end
+    yUpper_ID  = fit(Y06s_Top_Data(end-25:end,1),Y06s_Top_Data(end-25:end,2),"poly4", "Weight", [ones(1,25), 10]); IDuP = coeffvalues(yUpper_ID); %Good for x = 205.3 - 213.5 
+    yLower_ID = fit(Y06s_Bot_Data(1:30,1),Y06s_Bot_Data(1:30,2),"poly5", "Weight",[5, ones(1,29)]); IDlP = coeffvalues(yLower_ID); clc %Good for x = 205.3 - 218
+
+%Plotting
+    figure
+    plot(Y06s_airfoil_data(:,1),Y06s_airfoil_data(:,2),"linestyle","none","marker",'o', "Color",[0.4660 0.6740 0.1880]); % Y06s_airfoil raw data points
+    daspect([1,1,1]); ylim([-30 40]); xlim([200,330]); legend off; %1:1 aspect ratio
+    hold on; plot(yUpper_MD); hold on; plot(yLower_MD); %Major Data
+    hold on; plot(yLower_ID); hold on; plot(yUpper_ID) %Initial Data
+    %Axis labels and title
+    title("Y=067s Airfoil Coordinates Curve Fitting"); xlabel("x-coordinate [mm]"); ylabel("y-coorddinate [mm]"); legend off;
+
+%Saving final data points
+    %X values for major data
+    xVecUpperMD = linspace(329,214,118); xVecLowerMD = linspace(219,329,118);
+    %Y values for major data
+    y06sUpperMD = (MDuP(1)) .* (xVecUpperMD.^6) + (MDuP(2)) .* (xVecUpperMD.^5) + (MDuP(3)) .* (xVecUpperMD.^4)  + MDuP(4) .* (xVecUpperMD.^3) + MDuP(5) .* (xVecUpperMD.^2) + MDuP(6) .* (xVecUpperMD) + MDuP(7);
+    y06sLowerMD = (MDlP(1)) .* (xVecLowerMD.^6) + (MDlP(2)) .* (xVecLowerMD.^5) + (MDlP(3)) .* (xVecLowerMD.^4)  + MDlP(4) .* (xVecLowerMD.^3) + MDlP(5) .* (xVecLowerMD.^2) + MDlP(6) .* (xVecLowerMD) + MDlP(7);
+    %X values for initial data
+    xVecUpperID = linspace(213,205.3,10); xVecLowerID = linspace(205.3,218,10);
+    %Y values for initial data
+    y06sUpperID = (IDuP(1)) .* (xVecUpperID.^4)  + IDuP(2) .* (xVecUpperID.^3) + IDuP(3) .* (xVecUpperID.^2) + IDuP(4) .* (xVecUpperID) + IDuP(5);
+    y06sLowerID = (IDlP(1)) .* (xVecLowerID.^5) + (IDlP(2)) .* (xVecLowerID.^4)  + IDlP(3) .* (xVecLowerID.^3) + IDlP(4) .* (xVecLowerID.^2) + IDlP(5) .* (xVecLowerID) + IDlP(6);
+
+    LEy06 = ((2/3)*(287/2))/tand(25); %Leading Edge x-Point
+    Y06s_Airfoil_Final = [330, xVecUpperMD, xVecUpperID, LEy06, xVecLowerID, xVecLowerMD, 330; 0.25, y06sUpperMD, y06sUpperID, 0, y06sLowerID, y06sLowerMD, -0.25]';
+    writematrix(Y06s_Airfoil_Final,"Yequ06s_Airfoil_Official")
 

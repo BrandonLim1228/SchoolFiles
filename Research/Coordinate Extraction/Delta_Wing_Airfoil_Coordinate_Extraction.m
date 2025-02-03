@@ -229,7 +229,7 @@ clear, clc, close all
     TE_orangeY_Lower = -0.25; %mm - approximated form jpeg image
 
     % TE_greenX = 330; %mm - found from wing_geo_plot.m
-    TE_greenX = 328; %mm - found from wing_geo_plot.m
+    TE_greenX = 330; %mm - found from wing_geo_plot.m
     TE_greenY_Upper = 0.25; %mm - approximated form jpeg image
     TE_greenY_Lower = -0.25; %mm - approximated form jpeg image
     
