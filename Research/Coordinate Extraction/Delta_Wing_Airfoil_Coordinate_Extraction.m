@@ -2,7 +2,7 @@
 % Flow Physics and Control Lab
 %
 % Description: 
-%    Delta wing airfoil coordinate extraction from a matlab coordinate
+%    The following code is the delta wing airfoil coordinate extraction from a matlab coordinate
 %    image found in the masters thesis "Dynamic Active Flow Control of 
 %    the Roll Moment on a Generic UCAS Wing" by Xiaowei He
 %
@@ -208,8 +208,7 @@ clear, clc, close all
     end
 
 % Calculating Leading Edge Points
-    LE_blueX = 0;%mm
-    LE_blueY = 0; %mm
+    LE_blueX = 0; LE_blueY = 0; %mm
 
     LE_orangePY = (1/3) * s; %y position in planform geometry axis on the leading edge (different than y in airfoil coordinate system) mm
     LE_orangeX = LE_orangePY/tand(theta); %x position in planform geometry axis on leading edge mm 
@@ -235,20 +234,182 @@ clear, clc, close all
     
 % Final smoothed data with trailing and leading edge points
     BIneg = find(Blue_Airfoil_Sorted_Data_Smoothed(2,:) < 0); %index where blue airfoil y data switches from positive to negative
-    Blue_Airfoil_Sorted_Data_Smoothed = [TE_blueX, Blue_Airfoil_Sorted_Data_Smoothed(1,1:(BIneg(1)-1)), LE_blueX, Blue_Airfoil_Sorted_Data_Smoothed(1,BIneg(1):end), TE_blueX ; TE_blueY_Upper, Blue_Airfoil_Sorted_Data_Smoothed(2,1:(BIneg(1)-1)), LE_blueY, Blue_Airfoil_Sorted_Data_Smoothed(2,BIneg(1):end),TE_blueY_Lower];
+    Blue_Airfoil_Sorted_Data_Smoothed = [TE_blueX, Blue_Airfoil_Sorted_Data_Smoothed(1,1:(BIneg(1)-1)), LE_blueX, Blue_Airfoil_Sorted_Data_Smoothed(1,BIneg(1):end), TE_blueX ; TE_blueY_Upper, Blue_Airfoil_Sorted_Data_Smoothed(2,1:(BIneg(1)-1)), LE_blueY, Blue_Airfoil_Sorted_Data_Smoothed(2,BIneg(1):end),TE_blueY_Lower]';
     
     OIneg = find(Orange_Airfoil_Sorted_Data_Smoothed(2,:) < 0); %index where orange airfoil y data switches from positive to negative
-    Orange_Airfoil_Sorted_Data_Smoothed = [TE_orangeX, Orange_Airfoil_Sorted_Data_Smoothed(1,1:(OIneg(1)-1)), LE_orangeX, Orange_Airfoil_Sorted_Data_Smoothed(1,OIneg(1):end), TE_orangeX ; TE_orangeY_Upper, Orange_Airfoil_Sorted_Data_Smoothed(2,1:(OIneg(1)-1)), LE_orangeY, Orange_Airfoil_Sorted_Data_Smoothed(2,OIneg(1):end),TE_orangeY_Lower];
+    Orange_Airfoil_Sorted_Data_Smoothed = [TE_orangeX, Orange_Airfoil_Sorted_Data_Smoothed(1,1:(OIneg(1)-1)), LE_orangeX, Orange_Airfoil_Sorted_Data_Smoothed(1,OIneg(1):end), TE_orangeX ; TE_orangeY_Upper, Orange_Airfoil_Sorted_Data_Smoothed(2,1:(OIneg(1)-1)), LE_orangeY, Orange_Airfoil_Sorted_Data_Smoothed(2,OIneg(1):end),TE_orangeY_Lower]';
 
     GIneg = find(Green_Airfoil_Sorted_Data_Smoothed(2,:) < 0); %index where green airfoil y data switches from positive to negative
-    Green_Airfoil_Sorted_Data_Smoothed = [TE_greenX, Green_Airfoil_Sorted_Data_Smoothed(1,1:(GIneg(1)-1)), LE_greenX, Green_Airfoil_Sorted_Data_Smoothed(1,GIneg(1):end), TE_greenX ; TE_greenY_Upper, Green_Airfoil_Sorted_Data_Smoothed(2,1:(GIneg(1)-1)), LE_greenY, Green_Airfoil_Sorted_Data_Smoothed(2,GIneg(1):end),TE_greenY_Lower];
+    Green_Airfoil_Sorted_Data_Smoothed = [TE_greenX, Green_Airfoil_Sorted_Data_Smoothed(1,1:(GIneg(1)-1)), LE_greenX, Green_Airfoil_Sorted_Data_Smoothed(1,GIneg(1):end), TE_greenX ; TE_greenY_Upper, Green_Airfoil_Sorted_Data_Smoothed(2,1:(GIneg(1)-1)), LE_greenY, Green_Airfoil_Sorted_Data_Smoothed(2,GIneg(1):end),TE_greenY_Lower]';
 
-%Saving Data to Text Files
-    writematrix(Blue_Airfoil_Sorted_Data_Smoothed',"0_Airfoil_unfiltered.txt")
-    writematrix(Orange_Airfoil_Sorted_Data_Smoothed',"033s_Airfoil_unfiltered.txt")
-    writematrix(Green_Airfoil_Sorted_Data_Smoothed',"067s_Airfoil_unfiltered.txt")
+%--------------------------------------------------------------------------
+% Flow Physics and Control Lab
+%
+% Description: 
+%    The following code is the delta wing airfoil coordinate curve fitting from data extraction above to
+%    achieve a smooth contour.
+%
+% 1/25/2025
+%--------------------------------------------------------------------------
 
-% Plot Comparrison 
+%% Y = 0 airfoil
+
+%Sepparating data in upper and lower airfoil
+    Y0LEindex = find(Blue_Airfoil_Sorted_Data_Smoothed(:,1) == 0); %Findig leading edge index to split the airfoil
+    Y0_Top_Data = Blue_Airfoil_Sorted_Data_Smoothed(1:Y0LEindex,:); Y0_Bot_Data = Blue_Airfoil_Sorted_Data_Smoothed(Y0LEindex:end,:); %Separating data into upper and lower airfoil
+
+%Fitting curves to the airfoil
+    %Establishing weights for fitting data 
+    weightT0 = [20, 0.1*ones(1,length(Y0_Top_Data(:,1))-2), 20]; weightB0 = [40, 0.01*ones(1,length(Y0_Bot_Data(:,1))-2), 40]; %Weights for data points. More emphasis on first and last points than intermediate
+    y0Upper = fit(Y0_Top_Data(:,1),Y0_Top_Data(:,2),'poly5','Weights',weightT0); y0Lower = fit(Y0_Bot_Data(:,1),Y0_Bot_Data(:,2),'poly5','Weights',weightB0); clc; %Fitting a curve based on weights
+    y0UP = coeffvalues(y0Upper); y0LP = coeffvalues(y0Lower); %polynomials of fit
+
+%Plotting
+    figure
+    plot(Blue_Airfoil_Sorted_Data_Smoothed(:,1),Blue_Airfoil_Sorted_Data_Smoothed(:,2), "bo") % Y0_airfoil raw data points
+    daspect([1,1,1]); ylim([-100 100]) %1:1 aspect ratio
+    hold on; plot(y0Upper, "k"); hold on; plot(y0Lower,"k"); %Weighted 5th degree polynomial 
+    %Axis labels and title
+    title("Y=0 Airfoil Coordinates Curve Fitting"); xlabel("x-coordinate [mm]"); ylabel("y-coorddinate [mm]")
+
+%Saving final data points 
+    xVecUpper_y0 = linspace(329,1,123); xVecLower_y0 = linspace(1,329,123); %Creating linear evenly spaced x-values for upper and lower skins. 123 data points for each excluding leading and trailing edge points
+    y0Upper = (y0UP(1)) .* (xVecUpper_y0.^5) + (y0UP(2)) .* (xVecUpper_y0.^4) + (y0UP(3)) .* (xVecUpper_y0.^3) + (y0UP(4)) .* (xVecUpper_y0.^2) + y0UP(5) .* (xVecUpper_y0.^1) + y0UP(6);
+    y0Lower = (y0LP(1)) .* (xVecLower_y0.^5) + (y0LP(2)) .* (xVecLower_y0.^4) + (y0LP(3)) .* (xVecLower_y0.^3) + (y0LP(4)) .* (xVecLower_y0.^2) + (y0LP(5)) .* (xVecLower_y0.^1) + (y0LP(6));
+
+    Y0_Airfoil_Final = [TE_blueX, xVecUpper_y0, LE_blueX, xVecLower_y0, TE_blueX ; TE_blueY_Upper y0Upper, LE_blueY, y0Lower, TE_blueY_Lower]';
+    writematrix(Y0_Airfoil_Final,"Yequ0_Airfoil_Official", "Delimiter", "\t"); writematrix(Y0_Airfoil_Final./330,"Yequ0_Airfoil_Official_Normalized", "Delimiter", "\t");
+
+%% Y = 1/3s airfoil
+
+%Sepparating data in upper and lower airfoil
+    Y03sLEindex = find(Orange_Airfoil_Sorted_Data_Smoothed(:,2) == 0); %Findig leading edge index to split the airfoil
+    Y03s_Top_Data = Orange_Airfoil_Sorted_Data_Smoothed(1:Y03sLEindex,:); Y03s_Bot_Data = Orange_Airfoil_Sorted_Data_Smoothed(Y03sLEindex:end,:); %Separating data into upper and lower airfoil
+
+%Fitting curves to the airfoil
+    %Establishing weights for fitting major data 
+    eT = ones(1,50); eB = 20 * ones(1,46);
+    dT = ones(1,50); dB = ones(1,50);
+    cT = 0.5*ones(1,30); cB = ones(1,30);
+    bT = 2*ones(1,15); bB = 20*ones(1,15);
+    aT = 5*ones(1,4); aB = 30*ones(1,4);
+    weightT03s = [30,eT,dT,cT,bT,aT,40]; weightB03s = [60,aB,bB,cB,dB,eB,40];
+    %Establishing weights for initial data
+    weightTI03s = [0.01 1 1 3 10 10 10]; %(first 6 points after leading edge to capture curvature on the top skin)
+    weightBI03s = [1 0.00001 0.00001 1 1 0.0001]; 
+    %Weighted fitting to the data
+    y03sUpper_MD = fit(Y03s_Top_Data(:,1),Y03s_Top_Data(:,2),"poly9","Weights",weightT03s); MDuP03s = coeffvalues(y03sUpper_MD); %Good for x= 109 - end
+    y03sLower_MD = fit(Y03s_Bot_Data(:,1),Y03s_Bot_Data(:,2),"poly9","Weights",weightB03s); MDlP03s = coeffvalues(y03sLower_MD);%Good for x = 109 - end
+    y03sUpper_ID = fit(Y03s_Top_Data([end-6:end], 1), Y03s_Top_Data([end-6:end],2), "poly6","Weights",weightTI03s); IDuP03s = coeffvalues(y03sUpper_ID); %Good for x = 102.5 - 106
+    y03sLower_ID = fit(Y03s_Bot_Data([1:6], 1), Y03s_Bot_Data([1:6],2), "poly4","Weights",weightBI03s); IDlP03s = coeffvalues(y03sLower_ID);clc; %Good for x = 102.5 - 107
+
+%Plotting
+    figure
+    plot(Orange_Airfoil_Sorted_Data_Smoothed(:,1),Orange_Airfoil_Sorted_Data_Smoothed(:,2),"linestyle","none","marker",'o',"color",[0.8500 0.3250 0.0980]) % Y03s_airfoil raw data points
+    daspect([1,1,1]); ylim([-100 100]); xlim([0,350]); legend off; %1:1 aspect ratio
+    hold on; plot(y03sUpper_MD,"k"); hold on; plot(y03sLower_MD,"k") %Major Data
+    hold on; plot(y03sUpper_ID); hold on; plot(y03sLower_ID); %Inital Data
+    %Axis labels and title
+    title("Y=033s Airfoil Coordinates Curve Fitting"); xlabel("x-coordinate [mm]"); ylabel("y-coorddinate [mm]"); legend off;
+
+%Saving final data points
+    %X values for major data
+    xVecUpperMD_y03s = linspace(307,109,119); xVecLowerMD_y03s = linspace(109,307,119); 
+    %Y values for major data
+    y03sUpperMD = (MDuP03s(1)) .* (xVecUpperMD_y03s.^9) + (MDuP03s(2)) .* (xVecUpperMD_y03s.^8) + (MDuP03s(3)) .* (xVecUpperMD_y03s.^7) + (MDuP03s(4)) .* (xVecUpperMD_y03s.^6) + (MDuP03s(5)) .* (xVecUpperMD_y03s.^5) + (MDuP03s(6)) .* (xVecUpperMD_y03s.^4)  + MDuP03s(7) .* (xVecUpperMD_y03s.^3) + MDuP03s(8) .* (xVecUpperMD_y03s.^2) + MDuP03s(9) .* (xVecUpperMD_y03s) + MDuP03s(10);
+    y03sLowerMD = (MDlP03s(1)) .* (xVecLowerMD_y03s.^9) + (MDlP03s(2)) .* (xVecLowerMD_y03s.^8) + (MDlP03s(3)) .* (xVecLowerMD_y03s.^7) + (MDlP03s(4)) .* (xVecLowerMD_y03s.^6) + (MDlP03s(5)) .* (xVecLowerMD_y03s.^5) + (MDlP03s(6)) .* (xVecLowerMD_y03s.^4)  + MDlP03s(7) .* (xVecLowerMD_y03s.^3) + MDlP03s(8) .* (xVecLowerMD_y03s.^2) + MDlP03s(9) .* (xVecLowerMD_y03s) + MDlP03s(10);
+    %X values for initial data
+    xVecUpperID_y03s = linspace(106,103,4); xVecLowerID_y03s = linspace(103,107.5,4);  
+    %Y values for inital data
+    y03sUpperID = (IDuP03s(1)) .* (xVecUpperID_y03s.^6) + (IDuP03s(2)) .* (xVecUpperID_y03s.^5)  + IDuP03s(3) .* (xVecUpperID_y03s.^4) + IDuP03s(4) .* (xVecUpperID_y03s.^3) + IDuP03s(5) .* (xVecUpperID_y03s.^2) + IDuP03s(6).* (xVecUpperID_y03s) + IDuP03s(7);
+    y03sLowerID = (IDlP03s(1)) .* (xVecLowerID_y03s.^4)  + IDlP03s(2) .* (xVecLowerID_y03s.^3) + IDlP03s(3) .* (xVecLowerID_y03s.^2) + IDlP03s(4) .* (xVecLowerID_y03s) + IDlP03s(5);
+
+    Y03s_Airfoil_Final = [TE_orangeX, xVecUpperMD_y03s, xVecUpperID_y03s, LE_orangeX, xVecLowerID_y03s, xVecLowerMD_y03s, TE_orangeX; TE_orangeY_Upper, y03sUpperMD, y03sUpperID, LE_orangeY, y03sLowerID, y03sLowerMD, TE_orangeY_Lower]';
+    writematrix(Y03s_Airfoil_Final,"Yequ03s_Airfoil_Official", "Delimiter", "\t"); writematrix(Y03s_Airfoil_Final./330,"Yequ03s_Airfoil_Official_Normalized", "Delimiter", "\t");
+
+%% y = 2/3s airfoil
+
+
+%Sepparating data in upper and lower airfoil
+    Y06sLEindex = find(Green_Airfoil_Sorted_Data_Smoothed(:,2) == 0); %Findig leading edge index to split the airfoil
+    Y06s_Top_Data = Green_Airfoil_Sorted_Data_Smoothed(1:Y06sLEindex,:); Y06s_Bot_Data = Green_Airfoil_Sorted_Data_Smoothed(Y06sLEindex:end,:); %Separating data into upper and lower airfoil
+
+%Fitting Curves to the airfoil
+    %Establishing weights for fitting major data
+    weightT06s = [40, ones(1,220), 10]; weightB06s = [1,ones(1,231),40];
+    %Weighted fitting to the data    
+    y06sUpper_MD = fit(Y06s_Top_Data(:,1),Y06s_Top_Data(:,2),"poly6","Weight",weightT06s); MDuP06s = coeffvalues(y06sUpper_MD); %Good for x = 213.5 - end
+    y06sLower_MD = fit(Y06s_Bot_Data(:,1),Y06s_Bot_Data(:,2),"poly6","Weight",weightB06s); MDlP06s = coeffvalues(y06sLower_MD); %Good for x = 219 - end
+    y06sUpper_ID  = fit(Y06s_Top_Data(end-25:end,1),Y06s_Top_Data(end-25:end,2),"poly4", "Weight", [ones(1,25), 10]); IDuP06s = coeffvalues(y06sUpper_ID); %Good for x = 205.3 - 213.5 
+    y06sLower_ID = fit(Y06s_Bot_Data(1:30,1),Y06s_Bot_Data(1:30,2),"poly5", "Weight",[5, ones(1,29)]); IDlP06s = coeffvalues(y06sLower_ID); clc %Good for x = 205.3 - 218
+
+%Plotting
+    figure
+    plot(Green_Airfoil_Sorted_Data_Smoothed(:,1),Green_Airfoil_Sorted_Data_Smoothed(:,2),"linestyle","none","marker",'o', "Color",[0.4660 0.6740 0.1880]); % Y06s_airfoil raw data points
+    daspect([1,1,1]); ylim([-30 40]); xlim([200,330]); legend off; %1:1 aspect ratio
+    hold on; plot(y06sUpper_MD); hold on; plot(y06sLower_MD); %Major Data
+    hold on; plot(y06sLower_ID); hold on; plot(y06sUpper_ID) %Initial Data
+    %Axis labels and title
+    title("Y=067s Airfoil Coordinates Curve Fitting"); xlabel("x-coordinate [mm]"); ylabel("y-coorddinate [mm]"); legend off;
+
+%Saving final data points
+    %X values for major data
+    xVecUpperMD_y06s = linspace(329,214,118); xVecLowerMD_y06s = linspace(219,329,118);
+    %Y values for major data
+    y06sUpperMD = (MDuP06s(1)) .* (xVecUpperMD_y06s.^6) + (MDuP06s(2)) .* (xVecUpperMD_y06s.^5) + (MDuP06s(3)) .* (xVecUpperMD_y06s.^4)  + MDuP06s(4) .* (xVecUpperMD_y06s.^3) + MDuP06s(5) .* (xVecUpperMD_y06s.^2) + MDuP06s(6) .* (xVecUpperMD_y06s) + MDuP06s(7);
+    y06sLowerMD = (MDlP06s(1)) .* (xVecLowerMD_y06s.^6) + (MDlP06s(2)) .* (xVecLowerMD_y06s.^5) + (MDlP06s(3)) .* (xVecLowerMD_y06s.^4)  + MDlP06s(4) .* (xVecLowerMD_y06s.^3) + MDlP06s(5) .* (xVecLowerMD_y06s.^2) + MDlP06s(6) .* (xVecLowerMD_y06s) + MDlP06s(7);
+    %X values for initial data
+    xVecUpperID_y06s = linspace(213,205.3,10); xVecLowerID_y06s = linspace(205.3,218,10);
+    %Y values for initial data
+    y06sUpperID = (IDuP06s(1)) .* (xVecUpperID_y06s.^4)  + IDuP06s(2) .* (xVecUpperID_y06s.^3) + IDuP06s(3) .* (xVecUpperID_y06s.^2) + IDuP06s(4) .* (xVecUpperID_y06s) + IDuP06s(5);
+    y06sLowerID = (IDlP06s(1)) .* (xVecLowerID_y06s.^5) + (IDlP06s(2)) .* (xVecLowerID_y06s.^4)  + IDlP06s(3) .* (xVecLowerID_y06s.^3) + IDlP06s(4) .* (xVecLowerID_y06s.^2) + IDlP06s(5) .* (xVecLowerID_y06s) + IDlP06s(6);
+
+    Y06s_Airfoil_Final = [TE_greenX, xVecUpperMD_y06s, xVecUpperID_y06s, LE_greenX, xVecLowerID_y06s, xVecLowerMD_y06s, TE_greenX; TE_greenY_Upper, y06sUpperMD, y06sUpperID, LE_greenY, y06sLowerID, y06sLowerMD, TE_greenY_Lower]';
+    writematrix(Y06s_Airfoil_Final,"Yequ06s_Airfoil_Official", "Delimiter", "\t"); writematrix(Y06s_Airfoil_Final./330,"Yequ06s_Airfoil_Official_Normalized", "Delimiter", "\t");
+
+
+%Comparing Fits To Extracted Data
+    %y0 airfoil
+    y0Upper_Comparison = (y0UP(1)) .* (Y0_Top_Data(:,1).^5) + (y0UP(2)) .* (Y0_Top_Data(:,1).^4) + (y0UP(3)) .* (Y0_Top_Data(:,1).^3) + (y0UP(4)) .* (Y0_Top_Data(:,1).^2) + y0UP(5) .* (Y0_Top_Data(:,1).^1) + y0UP(6);
+    y0Lower_Comparison = (y0LP(1)) .* (Y0_Bot_Data(:,1).^5) + (y0LP(2)) .* (Y0_Bot_Data(:,1).^4) + (y0LP(3)) .* (Y0_Bot_Data(:,1).^3) + (y0LP(4)) .* (Y0_Bot_Data(:,1).^2) + (y0LP(5)) .* (Y0_Bot_Data(:,1).^1) + (y0LP(6));
+    errorY0Top = abs((y0Upper_Comparison - Y0_Top_Data(:,2))./Y0_Top_Data(:,2)) .*100;
+    errorY0Bot = abs((y0Lower_Comparison - Y0_Bot_Data(:,2))./Y0_Bot_Data(:,2)) .*100;
+    figure
+    plot(Y0_Top_Data(:,1),errorY0Top,"ro")
+    hold on
+    plot(Y0_Bot_Data(:,1),errorY0Bot,"bo")
+
+    %y03s airfoil
+
+    %y06s airfoil
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%% Plot Comparrison of JPEG Extracted Data
+figure
     subplot(2,2,1)
         image(xlims, ylims, Airfoil_Image)
         % Updating image aspect ratio of matlab figure to match axis alignment with JPEG photo
@@ -256,9 +417,21 @@ clear, clc, close all
         % Adding a grid to the image 
             grid on; grid minor; ax = gca; ax.GridLineWidth = 2; ax.GridLineStyle = "-"; ax.GridAlpha = 1; ax.GridColor = "k"; set(gca,"YDir","normal");
         %Adding axis labels and title
-            xlabel("x-coord [mm]")
-            ylabel("y-coord [mm]")
-            title("JPEG Image")
+            xlabel("x-coord [mm]"); ylabel("y-coord [mm]"); title("JPEG Image");
+    subplot(2,2,2)
+            plot(Blue_Airfoil_Sorted_Data_Smoothed(:,1),Blue_Airfoil_Sorted_Data_Smoothed(:,2), "linewidth", 1, "Color",[0 0.4470 0.7410]) %y=0 airfoil
+        hold on
+            plot(Orange_Airfoil_Sorted_Data_Smoothed(:,1),Orange_Airfoil_Sorted_Data_Smoothed(:,2), "linewidth", 1, "Color",[0.8500 0.3250 0.0980]) %y=1/3s airfoil
+        hold on
+            plot(Green_Airfoil_Sorted_Data_Smoothed(:,1),Green_Airfoil_Sorted_Data_Smoothed(:,2), "linewidth", 1, "Color",[0.4660 0.6740 0.1880]) %y=2/3s airfoil
+        %Setting axis limits 
+            xlim([xMin,xMax]); ylim([yMin,yMax]);
+        %Updating image aspect ratio to match axis alignment
+            daspect([1, ((abs(yMax) + abs(yMin))/529) * (1518/(abs(xMax) + abs(xMin))), 1]);
+        %Adding plot grid
+            grid on; grid minor; ax = gca; ax.GridLineWidth = 2; ax.GridLineStyle = "-"; ax.GridAlpha = 1; ax.GridColor = "k"; set(gca,"YDir","normal");
+        %Adding axis labels and title
+            xlabel("x-coord [mm]"); ylabel("y-coord [mm]"); title("Reconstructed Airfoils with Smoothed Data")
     subplot(2,2,3)
             plot(Blue_Airfoil_Sorted_Data_Raw(1,:),Blue_Airfoil_Sorted_Data_Raw(2,:),".", "Color",[0 0.4470 0.7410]) %y=0 airfoil
         hold on 
@@ -266,67 +439,80 @@ clear, clc, close all
         hold on
             plot(Green_Airfoil_Sorted_Data_Raw(1,:),Green_Airfoil_Sorted_Data_Raw(2,:),".","Color",[0.4660 0.6740 0.1880]) %y=2/3s airfoil
         %Setting axis limits 
-            xlim([xMin,xMax])
-            ylim([yMin,yMax])
+            xlim([xMin,xMax]); ylim([yMin,yMax])
         %Updating image aspect ratio to match axis alignment
-            daspect([1, ((abs(yMax) + abs(yMin))/529) * (1518/(abs(xMax) + abs(xMin))), 1])
-        hold on
+            daspect([1, ((abs(yMax) + abs(yMin))/529) * (1518/(abs(xMax) + abs(xMin))), 1]);
         %Adding plot grid
-            grid on; grid minor;
-            ax = gca; ax.GridLineWidth = 2; ax.GridLineStyle = "-"; ax.GridAlpha = 1; ax.GridColor = "k"; set(gca,"YDir","normal");
+            grid on; grid minor; ax = gca; ax.GridLineWidth = 2; ax.GridLineStyle = "-"; ax.GridAlpha = 1; ax.GridColor = "k"; set(gca,"YDir","normal");
         %Adding axis labels and title
-            xlabel("x-coord [mm]")
-            ylabel("y-coord [mm]")
-            title("Raw Extracted Data Points")
+            xlabel("x-coord [mm]"); ylabel("y-coord [mm]"); title("Raw Extracted Data Points");
     subplot(2,2,4)
-            plot(Blue_Airfoil_Sorted_Data_Smoothed(1,:),Blue_Airfoil_Sorted_Data_Smoothed(2,:),".", "Color",[0 0.4470 0.7410]) %y=0 airfoil
+            plot(Blue_Airfoil_Sorted_Data_Smoothed(:,1),Blue_Airfoil_Sorted_Data_Smoothed(:,2),".", "Color",[0 0.4470 0.7410]) %y=0 airfoil
         hold on
-            plot(Orange_Airfoil_Sorted_Data_Smoothed(1,:),Orange_Airfoil_Sorted_Data_Smoothed(2,:),".", "Color",[0.8500 0.3250 0.0980]) %y=1/3s airfoil
+            plot(Orange_Airfoil_Sorted_Data_Smoothed(:,1),Orange_Airfoil_Sorted_Data_Smoothed(:,2),".", "Color",[0.8500 0.3250 0.0980]) %y=1/3s airfoil
         hold on
-            plot(Green_Airfoil_Sorted_Data_Smoothed(1,:),Green_Airfoil_Sorted_Data_Smoothed(2,:),".","Color",[0.4660 0.6740 0.1880]) %y=2/3s airfoil
+            plot(Green_Airfoil_Sorted_Data_Smoothed(:,1),Green_Airfoil_Sorted_Data_Smoothed(:,2),".","Color",[0.4660 0.6740 0.1880]) %y=2/3s airfoil
         %Setting axis limits 
-            xlim([xMin,xMax])
-            ylim([yMin,yMax])
+            xlim([xMin,xMax]); ylim([yMin,yMax])
         %Updating image aspect ratio to match axis alignment
-            daspect([1, ((abs(yMax) + abs(yMin))/529) * (1518/(abs(xMax) + abs(xMin))), 1])
-        hold on
+            daspect([1, ((abs(yMax) + abs(yMin))/529) * (1518/(abs(xMax) + abs(xMin))), 1]);
         %Adding plot grid
-            grid on; grid minor;
-            ax = gca; ax.GridLineWidth = 2; ax.GridLineStyle = "-"; ax.GridAlpha = 1; ax.GridColor = "k"; set(gca,"YDir","normal");
+            grid on; grid minor; ax = gca; ax.GridLineWidth = 2; ax.GridLineStyle = "-"; ax.GridAlpha = 1; ax.GridColor = "k"; set(gca,"YDir","normal");
         %Adding axis labels and title
-            xlabel("x-coord [mm]")
-            ylabel("y-coord [mm]")
-            title("Smoothed Extracted Data Points")
-    subplot(2,2,2)
-            plot(Blue_Airfoil_Sorted_Data_Smoothed(1,:),Blue_Airfoil_Sorted_Data_Smoothed(2,:), "linewidth", 1, "Color",[0 0.4470 0.7410]) %y=0 airfoil
+            xlabel("x-coord [mm]"); ylabel("y-coord [mm]"); title("Smoothed Extracted Data Points")
+
+%% Plot Comparison of JPEG Image and Final Airfoils
+figure 
+    subplot(3,1,1)
+        image(xlims, ylims, Airfoil_Image)
+        % Updating image aspect ratio of matlab figure to match axis alignment with JPEG photo
+        daspect([1, ((abs(yMax) + abs(yMin))/529) * (1518/(abs(xMax) + abs(xMin))), 1]);
+        % Adding a grid to the image
+        grid on; set(gca,"YDir","normal");
+        %Adding axis labels and title
+        xlabel("x-coord [mm]"); ylabel("y-coord [mm]"); title("JPEG Image")
+    subplot(3,1,2)
+        plot(Y0_Airfoil_Final(:,1),Y0_Airfoil_Final(:,2), "linewidth", 1.5, "Color",[0 0.4470 0.7410], "linestyle", "none", "Marker", ".") %y=0 airfoil
+        hold on 
+        plot(Y03s_Airfoil_Final(:,1),Y03s_Airfoil_Final(:,2), "linewidth", 1.5, "Color",[0.8500 0.3250 0.0980], "linestyle", "none", "Marker",".") %y=03s airfoil
         hold on
-            plot(Orange_Airfoil_Sorted_Data_Smoothed(1,:),Orange_Airfoil_Sorted_Data_Smoothed(2,:), "linewidth", 1, "Color",[0.8500 0.3250 0.0980]) %y=1/3s airfoil
-        hold on
-            plot(Green_Airfoil_Sorted_Data_Smoothed(1,:),Green_Airfoil_Sorted_Data_Smoothed(2,:), "linewidth", 1, "Color",[0.4660 0.6740 0.1880]) %y=2/3s airfoil
-        %Setting axis limits 
-            xlim([xMin,xMax])
-            ylim([yMin,yMax])
+        plot(Y06s_Airfoil_Final(:,1),Y06s_Airfoil_Final(:,2), "linewidth", 1.5, "Color", [0.4660 0.6740 0.1880], "linestyle", "none", "Marker",".") %y=06s airfoil
+        xlim(xlims);ylim(ylims);
         %Updating image aspect ratio to match axis alignment
-            daspect([1, ((abs(yMax) + abs(yMin))/529) * (1518/(abs(xMax) + abs(xMin))), 1])
-        hold on
+        daspect([1, ((abs(yMax) + abs(yMin))/529) * (1518/(abs(xMax) + abs(xMin))), 1])
         %Adding plot grid
-            grid on; grid minor;
-            ax = gca; ax.GridLineWidth = 2; ax.GridLineStyle = "-"; ax.GridAlpha = 1; ax.GridColor = "k"; set(gca,"YDir","normal");
+        grid on; set(gca,"YDir","normal");
         %Adding axis labels and title
-            xlabel("x-coord [mm]")
-            ylabel("y-coord [mm]")
-            title("Reconstructed Airfoils with Smoothed Data")
-
-
-
-
-
-
-
-
-
-
-
+        xlabel("x-coord [mm]"); ylabel("y-coord [mm]"); title("Reconstructed Airfoil Data")
+    subplot(3,1,3)
+        plot(Y0_Airfoil_Final(:,1),Y0_Airfoil_Final(:,2), "linewidth", 1.5, "Color",[0 0.4470 0.7410]) %y=0 airfoil
+        hold on 
+        plot(Y03s_Airfoil_Final(:,1),Y03s_Airfoil_Final(:,2), "linewidth", 1.5, "Color",[0.8500 0.3250 0.0980]) %y=03s airfoil
+        hold on
+        plot(Y06s_Airfoil_Final(:,1),Y06s_Airfoil_Final(:,2), "linewidth", 1.5, "Color", [0.4660 0.6740 0.1880]) %y=06s airfoil
+        xlim(xlims);ylim(ylims);
+        %Updating image aspect ratio to match axis alignment
+        daspect([1, ((abs(yMax) + abs(yMin))/529) * (1518/(abs(xMax) + abs(xMin))), 1])
+        %Adding plot grid
+        grid on; set(gca,"YDir","normal");
+        %Adding axis labels and title
+        xlabel("x-coord [mm]"); ylabel("y-coord [mm]"); title("Reconstructed Airfoil Data")
+%% Normaized Plots
+airfoil1 = readmatrix("Yequ0_Airfoil_Official_Normalized.txt");
+airfoil2 = readmatrix("Yequ03s_Airfoil_Official_Normalized.txt");
+airfoil3 = readmatrix("Yequ06s_Airfoil_Official_Normalized.txt");
+figure
+    plot(airfoil1(:,1),airfoil1(:,2), "linewidth", 1.5, "Color",[0 0.4470 0.7410]) %y=0 airfoil
+    hold on 
+    plot(airfoil2(:,1),airfoil2(:,2), "linewidth", 1.5, "Color",[0.8500 0.3250 0.0980]) %y=03s airfoil
+    hold on
+    plot(airfoil3(:,1),airfoil3(:,2), "linewidth", 1.5, "Color", [0.4660 0.6740 0.1880]) %y=06s airfoil
+    xlim([-0.1 1.1]); ylim([-0.1 0.1]);
+    %Updating image aspect ratio to match axis alignment
+    daspect([1,1,1]); grid on; set(gca,"YDir","normal");
+    %Adding axis labels and title
+    xlabel("x-coord [mm]"); ylabel("y-coord [mm]"); title("Reconstructed Airfoil Data")
+    
 
 
 
