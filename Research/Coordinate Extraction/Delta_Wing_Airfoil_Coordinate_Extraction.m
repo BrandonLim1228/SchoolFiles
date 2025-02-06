@@ -372,15 +372,40 @@ clear, clc, close all
     %y0 airfoil
     y0Upper_Comparison = (y0UP(1)) .* (Y0_Top_Data(:,1).^5) + (y0UP(2)) .* (Y0_Top_Data(:,1).^4) + (y0UP(3)) .* (Y0_Top_Data(:,1).^3) + (y0UP(4)) .* (Y0_Top_Data(:,1).^2) + y0UP(5) .* (Y0_Top_Data(:,1).^1) + y0UP(6);
     y0Lower_Comparison = (y0LP(1)) .* (Y0_Bot_Data(:,1).^5) + (y0LP(2)) .* (Y0_Bot_Data(:,1).^4) + (y0LP(3)) .* (Y0_Bot_Data(:,1).^3) + (y0LP(4)) .* (Y0_Bot_Data(:,1).^2) + (y0LP(5)) .* (Y0_Bot_Data(:,1).^1) + (y0LP(6));
-    errorY0Top = abs((y0Upper_Comparison - Y0_Top_Data(:,2))./Y0_Top_Data(:,2)) .*100;
-    errorY0Bot = abs((y0Lower_Comparison - Y0_Bot_Data(:,2))./Y0_Bot_Data(:,2)) .*100;
+    errorY0Top = abs((y0Upper_Comparison - Y0_Top_Data(:,2))./Y0_Top_Data(:,2)) .*100; errorY0Bot = abs((y0Lower_Comparison - Y0_Bot_Data(:,2))./Y0_Bot_Data(:,2)) .*100;
+    
     figure
-    plot(Y0_Top_Data(:,1),errorY0Top,"ro")
-    hold on
-    plot(Y0_Bot_Data(:,1),errorY0Bot,"bo")
+    plot(Y0_Top_Data(:,1),errorY0Top,"ro"); hold on; plot(Y0_Bot_Data(:,1),errorY0Bot,"bo")
+    title("Percent Error")
 
     %y03s airfoil
+    n = 1; k = 1; z = 1; r = 1;
+    for i = 1:length(Y03s_Top_Data)
+        if Y03s_Top_Data(i,1) >= 108
+            y03sUpperMD_Comparison(n) = (MDuP03s(1)) .* (Y03s_Top_Data(i,1).^9) + (MDuP03s(2)) .* (Y03s_Top_Data(i,1).^8) + (MDuP03s(3)) .* (Y03s_Top_Data(i,1).^7) + (MDuP03s(4)) .* (Y03s_Top_Data(i,1).^6) + (MDuP03s(5)) .* (Y03s_Top_Data(i,1).^5) + (MDuP03s(6)) .* (Y03s_Top_Data(i,1).^4)  + MDuP03s(7) .* (Y03s_Top_Data(i,1).^3) + MDuP03s(8) .* (Y03s_Top_Data(i,1).^2) + MDuP03s(9) .* (Y03s_Top_Data(i,1)) + MDuP03s(10);
+            n = n + 1;
+        else
+            y03sUpperID_Comparison(z) = (IDuP03s(1)) .* (Y03s_Top_Data(i,1).^6) + (IDuP03s(2)) .* (Y03s_Top_Data(i,1).^5)  + IDuP03s(3) .* (Y03s_Top_Data(i,1).^4) + IDuP03s(4) .* (Y03s_Top_Data(i,1).^3) + IDuP03s(5) .* (Y03s_Top_Data(i,1).^2) + IDuP03s(6).* (Y03s_Top_Data(i,1)) + IDuP03s(7);
+            z = z + 1;
+        end
+    end
+    for i = 1:length(Y03s_Bot_Data)
+        if Y03s_Bot_Data(i,1) >= 107
+            y03sLowerMD_Comparison(k) = (MDlP03s(1)) .* (Y03s_Bot_Data(i,1).^9) + (MDlP03s(2)) .* (Y03s_Bot_Data(i,1).^8) + (MDlP03s(3)) .* (Y03s_Bot_Data(i,1).^7) + (MDlP03s(4)) .* (Y03s_Bot_Data(i,1).^6) + (MDlP03s(5)) .* (Y03s_Bot_Data(i,1).^5) + (MDlP03s(6)) .* (Y03s_Bot_Data(i,1).^4)  + MDlP03s(7) .* (Y03s_Bot_Data(i,1).^3) + MDlP03s(8) .* (Y03s_Bot_Data(i,1).^2) + MDlP03s(9) .* (Y03s_Bot_Data(i,1)) + MDlP03s(10);
+            k = k + 1;
+        else
+            y03sLowerID_Comparison(r) = (IDlP03s(1)) .* (Y03s_Bot_Data(i,1).^4)  + IDlP03s(2) .* (Y03s_Bot_Data(i,1).^3) + IDlP03s(3) .* (Y03s_Bot_Data(i,1).^2) + IDlP03s(4) .* (Y03s_Bot_Data(i,1)) + IDlP03s(5);
+            r = r + 1;
+        end
+    end
+    y03sUpper_Comparison = [y03sUpperMD_Comparison, y03sUpperID_Comparison]'; y03sLower_Comparison = [y03sLowerID_Comparison, y03sLowerMD_Comparison]';
 
+    errorY03sTop = abs((y03sUpper_Comparison - Y03s_Top_Data(:,2))./Y03s_Top_Data(:,2)) .*100; errorY03sBot = abs((y03sLower_Comparison - Y03s_Bot_Data(:,2))./Y03s_Bot_Data(:,2)) .*100;
+    figure
+    plot(Y03s_Top_Data(:,1),errorY03sTop,"ro")
+    hold on
+    plot(Y03s_Bot_Data(:,1),errorY03sBot,"bo")
+        
     %y06s airfoil
 
 
