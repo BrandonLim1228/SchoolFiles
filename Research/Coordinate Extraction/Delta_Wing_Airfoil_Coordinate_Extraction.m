@@ -283,7 +283,7 @@ clear, clc, close all
     NormalizedY0 = Y0_Airfoil_Final./330;
     yVecY0 = zeros(length(NormalizedY0),1); %% Adding planform location;
     NormalizedY0 = [NormalizedY0(:,1),yVecY0,NormalizedY0(:,2)];
-    writematrix(round(NormalizedY0,3),"Yequ0_Airfoil_Official_Normalized", "Delimiter", "\t");
+    writematrix(NormalizedY0,"Yequ0_Airfoil_Official_Normalized", "Delimiter", "\t");
 
 
 %% Y = 1/3s Airfoil Curve Fitting
@@ -335,8 +335,8 @@ clear, clc, close all
     NormalizedY03s_initial = Y03s_Airfoil_Final./330;
     yVecY03s = (ones(length(NormalizedY03s_initial),1) .* (1/3) .* s)./330; %% Adding planform location;
     NormalizedY03s = [NormalizedY03s_initial(:,1),yVecY03s,NormalizedY03s_initial(:,2)]; NormalizedY03sneg = [NormalizedY03s_initial(:,1),-yVecY03s,NormalizedY03s_initial(:,2)];
-    writematrix(round(NormalizedY03s,3),"Yequ03s_Airfoil_Official_Normalized", "Delimiter", "\t");
-    writematrix(round(NormalizedY03sneg,3),"Yequ03s_Airfoil_Official_Normalized_negS", "Delimiter", "\t");
+    writematrix(NormalizedY03s,"Yequ03s_Airfoil_Official_Normalized", "Delimiter", "\t");
+    writematrix(NormalizedY03sneg,"Yequ03s_Airfoil_Official_Normalized_negS", "Delimiter", "\t");
 
 
 %% y = 2/3s Airfoil Curve Fitting
@@ -381,8 +381,8 @@ clear, clc, close all
     NormalizedY06s_initial = Y06s_Airfoil_Final./330;
     yVecY06s = (ones(length(NormalizedY06s_initial),1) .* (2/3) .* s)./330; %% Adding planform location;
     NormalizedY06s = [NormalizedY06s_initial(:,1),yVecY06s,NormalizedY06s_initial(:,2)]; NormalizedY06sneg = [NormalizedY06s_initial(:,1),-yVecY06s,NormalizedY06s_initial(:,2)];
-    writematrix(round(NormalizedY06s,3),"Yequ06s_Airfoil_Official_Normalized", "Delimiter", "\t");
-    writematrix(round(NormalizedY06sneg,3),"Yequ06s_Airfoil_Official_Normalized_negS", "Delimiter", "\t");
+    writematrix(NormalizedY06s,"Yequ06s_Airfoil_Official_Normalized", "Delimiter", "\t");
+    writematrix(NormalizedY06sneg,"Yequ06s_Airfoil_Official_Normalized_negS", "Delimiter", "\t");
 
 
 %% Comparing Fits To Extracted Data
