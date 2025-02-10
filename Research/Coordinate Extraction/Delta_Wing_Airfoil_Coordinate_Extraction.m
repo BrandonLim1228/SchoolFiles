@@ -278,7 +278,7 @@ clear, clc, close all
     y0Upper = (y0UP(1)) .* (xVecUpper_y0.^5) + (y0UP(2)) .* (xVecUpper_y0.^4) + (y0UP(3)) .* (xVecUpper_y0.^3) + (y0UP(4)) .* (xVecUpper_y0.^2) + y0UP(5) .* (xVecUpper_y0.^1) + y0UP(6);
     y0Lower = (y0LP(1)) .* (xVecLower_y0.^5) + (y0LP(2)) .* (xVecLower_y0.^4) + (y0LP(3)) .* (xVecLower_y0.^3) + (y0LP(4)) .* (xVecLower_y0.^2) + (y0LP(5)) .* (xVecLower_y0.^1) + (y0LP(6));
 
-    Y0_Airfoil_Final = [TE_blueX, xVecUpper_y0, LE_blueX, xVecLower_y0, TE_blueX ; TE_blueY_Upper y0Upper, LE_blueY, y0Lower, TE_blueY_Lower]';
+    Y0_Airfoil_Final = [TE_blueX, xVecUpper_y0, LE_blueX, xVecLower_y0, TE_blueX ; zeros(1,249); TE_blueY_Upper y0Upper, LE_blueY, y0Lower, TE_blueY_Lower]';
     writematrix(Y0_Airfoil_Final,"Yequ0_Airfoil_Official", "Delimiter", "\t");
     NormalizedY0 = Y0_Airfoil_Final./330;
     yVecY0 = zeros(length(NormalizedY0),1); %% Adding planform location;
@@ -330,7 +330,7 @@ clear, clc, close all
     y03sUpperID = (IDuP03s(1)) .* (xVecUpperID_y03s.^6) + (IDuP03s(2)) .* (xVecUpperID_y03s.^5)  + IDuP03s(3) .* (xVecUpperID_y03s.^4) + IDuP03s(4) .* (xVecUpperID_y03s.^3) + IDuP03s(5) .* (xVecUpperID_y03s.^2) + IDuP03s(6).* (xVecUpperID_y03s) + IDuP03s(7);
     y03sLowerID = (IDlP03s(1)) .* (xVecLowerID_y03s.^4)  + IDlP03s(2) .* (xVecLowerID_y03s.^3) + IDlP03s(3) .* (xVecLowerID_y03s.^2) + IDlP03s(4) .* (xVecLowerID_y03s) + IDlP03s(5);
 
-    Y03s_Airfoil_Final = [TE_orangeX, xVecUpperMD_y03s, xVecUpperID_y03s, LE_orangeX, xVecLowerID_y03s, xVecLowerMD_y03s, TE_orangeX; TE_orangeY_Upper, y03sUpperMD, y03sUpperID, LE_orangeY, y03sLowerID, y03sLowerMD, TE_orangeY_Lower]';
+    Y03s_Airfoil_Final = [TE_orangeX, xVecUpperMD_y03s, xVecUpperID_y03s, LE_orangeX, xVecLowerID_y03s, xVecLowerMD_y03s, TE_orangeX; ones(1,249).*(1/3) .* s; TE_orangeY_Upper, y03sUpperMD, y03sUpperID, LE_orangeY, y03sLowerID, y03sLowerMD, TE_orangeY_Lower]';
     writematrix(Y03s_Airfoil_Final,"Yequ03s_Airfoil_Official", "Delimiter", "\t"); 
     NormalizedY03s_initial = Y03s_Airfoil_Final./330;
     yVecY03s = (ones(length(NormalizedY03s_initial),1) .* (1/3) .* s)./330; %% Adding planform location;
@@ -366,7 +366,7 @@ clear, clc, close all
 
 %Saving final data points
     %X values for major data
-    xVecUpperMD_y06s = linspace(329,214,118); xVecLowerMD_y06s = linspace(219,329,118);
+    xVecUpperMD_y06s = linspace(329,214,113); xVecLowerMD_y06s = linspace(219,329,113);
     %Y values for major data
     y06sUpperMD = (MDuP06s(1)) .* (xVecUpperMD_y06s.^6) + (MDuP06s(2)) .* (xVecUpperMD_y06s.^5) + (MDuP06s(3)) .* (xVecUpperMD_y06s.^4)  + MDuP06s(4) .* (xVecUpperMD_y06s.^3) + MDuP06s(5) .* (xVecUpperMD_y06s.^2) + MDuP06s(6) .* (xVecUpperMD_y06s) + MDuP06s(7);
     y06sLowerMD = (MDlP06s(1)) .* (xVecLowerMD_y06s.^6) + (MDlP06s(2)) .* (xVecLowerMD_y06s.^5) + (MDlP06s(3)) .* (xVecLowerMD_y06s.^4)  + MDlP06s(4) .* (xVecLowerMD_y06s.^3) + MDlP06s(5) .* (xVecLowerMD_y06s.^2) + MDlP06s(6) .* (xVecLowerMD_y06s) + MDlP06s(7);
@@ -376,7 +376,7 @@ clear, clc, close all
     y06sUpperID = (IDuP06s(1)) .* (xVecUpperID_y06s.^4)  + IDuP06s(2) .* (xVecUpperID_y06s.^3) + IDuP06s(3) .* (xVecUpperID_y06s.^2) + IDuP06s(4) .* (xVecUpperID_y06s) + IDuP06s(5);
     y06sLowerID = (IDlP06s(1)) .* (xVecLowerID_y06s.^5) + (IDlP06s(2)) .* (xVecLowerID_y06s.^4)  + IDlP06s(3) .* (xVecLowerID_y06s.^3) + IDlP06s(4) .* (xVecLowerID_y06s.^2) + IDlP06s(5) .* (xVecLowerID_y06s) + IDlP06s(6);
 
-    Y06s_Airfoil_Final = [TE_greenX, xVecUpperMD_y06s, xVecUpperID_y06s, LE_greenX, xVecLowerID_y06s, xVecLowerMD_y06s, TE_greenX; TE_greenY_Upper, y06sUpperMD, y06sUpperID, LE_greenY, y06sLowerID, y06sLowerMD, TE_greenY_Lower]';
+    Y06s_Airfoil_Final = [TE_greenX, xVecUpperMD_y06s, xVecUpperID_y06s, LE_greenX, xVecLowerID_y06s, xVecLowerMD_y06s, TE_greenX; ones(1,249).*(2/3) .* s; TE_greenY_Upper, y06sUpperMD, y06sUpperID, LE_greenY, y06sLowerID, y06sLowerMD, TE_greenY_Lower]';
     writematrix(Y06s_Airfoil_Final,"Yequ06s_Airfoil_Official", "Delimiter", "\t");
     NormalizedY06s_initial = Y06s_Airfoil_Final./330;
     yVecY06s = (ones(length(NormalizedY06s_initial),1) .* (2/3) .* s)./330; %% Adding planform location;
@@ -501,11 +501,11 @@ figure
         %Adding axis labels and title
         xlabel("x-coord [mm]"); ylabel("y-coord [mm]"); title("JPEG Image")
     subplot(3,1,2)
-        plot(Y0_Airfoil_Final(:,1),Y0_Airfoil_Final(:,2), "linewidth", 1.5, "Color",[0 0.4470 0.7410], "linestyle", "none", "Marker", ".") %y=0 airfoil
+        plot(Y0_Airfoil_Final(:,1),Y0_Airfoil_Final(:,3), "linewidth", 1.5, "Color",[0 0.4470 0.7410], "linestyle", "none", "Marker", ".") %y=0 airfoil
         hold on 
-        plot(Y03s_Airfoil_Final(:,1),Y03s_Airfoil_Final(:,2), "linewidth", 1.5, "Color",[0.8500 0.3250 0.0980], "linestyle", "none", "Marker",".") %y=03s airfoil
+        plot(Y03s_Airfoil_Final(:,1),Y03s_Airfoil_Final(:,3), "linewidth", 1.5, "Color",[0.8500 0.3250 0.0980], "linestyle", "none", "Marker",".") %y=03s airfoil
         hold on
-        plot(Y06s_Airfoil_Final(:,1),Y06s_Airfoil_Final(:,2), "linewidth", 1.5, "Color", [0.4660 0.6740 0.1880], "linestyle", "none", "Marker",".") %y=06s airfoil
+        plot(Y06s_Airfoil_Final(:,1),Y06s_Airfoil_Final(:,3), "linewidth", 1.5, "Color", [0.4660 0.6740 0.1880], "linestyle", "none", "Marker",".") %y=06s airfoil
         xlim(xlims);ylim(ylims);
         %Updating image aspect ratio to match axis alignment
         daspect([1, ((abs(yMax) + abs(yMin))/529) * (1518/(abs(xMax) + abs(xMin))), 1])
@@ -514,11 +514,11 @@ figure
         %Adding axis labels and title
         xlabel("x-coord [mm]"); ylabel("y-coord [mm]"); title("Reconstructed Airfoil Data")
     subplot(3,1,3)
-        plot(Y0_Airfoil_Final(:,1),Y0_Airfoil_Final(:,2), "linewidth", 1.5, "Color",[0 0.4470 0.7410]) %y=0 airfoil
+        plot(Y0_Airfoil_Final(:,1),Y0_Airfoil_Final(:,3), "linewidth", 1.5, "Color",[0 0.4470 0.7410]) %y=0 airfoil
         hold on 
-        plot(Y03s_Airfoil_Final(:,1),Y03s_Airfoil_Final(:,2), "linewidth", 1.5, "Color",[0.8500 0.3250 0.0980]) %y=03s airfoil
+        plot(Y03s_Airfoil_Final(:,1),Y03s_Airfoil_Final(:,3), "linewidth", 1.5, "Color",[0.8500 0.3250 0.0980]) %y=03s airfoil
         hold on
-        plot(Y06s_Airfoil_Final(:,1),Y06s_Airfoil_Final(:,2), "linewidth", 1.5, "Color", [0.4660 0.6740 0.1880]) %y=06s airfoil
+        plot(Y06s_Airfoil_Final(:,1),Y06s_Airfoil_Final(:,3), "linewidth", 1.5, "Color", [0.4660 0.6740 0.1880]) %y=06s airfoil
         xlim(xlims);ylim(ylims);
         %Updating image aspect ratio to match axis alignment
         daspect([1, ((abs(yMax) + abs(yMin))/529) * (1518/(abs(xMax) + abs(xMin))), 1])
