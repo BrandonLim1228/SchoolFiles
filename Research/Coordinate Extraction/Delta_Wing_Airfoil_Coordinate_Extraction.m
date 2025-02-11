@@ -281,8 +281,6 @@ clear, clc, close all
     Y0_Airfoil_Final = [TE_blueX, xVecUpper_y0, LE_blueX, xVecLower_y0, TE_blueX ; zeros(1,249); TE_blueY_Upper y0Upper, LE_blueY, y0Lower, TE_blueY_Lower]';
     writematrix(Y0_Airfoil_Final,"Yequ0_Airfoil_Official", "Delimiter", "\t");
     NormalizedY0 = Y0_Airfoil_Final./330;
-    yVecY0 = zeros(length(NormalizedY0),1); %% Adding planform location;
-    NormalizedY0 = [NormalizedY0(:,1),yVecY0,NormalizedY0(:,2)];
     writematrix(NormalizedY0,"Yequ0_Airfoil_Official_Normalized", "Delimiter", "\t");
 
 
@@ -332,11 +330,9 @@ clear, clc, close all
 
     Y03s_Airfoil_Final = [TE_orangeX, xVecUpperMD_y03s, xVecUpperID_y03s, LE_orangeX, xVecLowerID_y03s, xVecLowerMD_y03s, TE_orangeX; ones(1,249).*(1/3) .* s; TE_orangeY_Upper, y03sUpperMD, y03sUpperID, LE_orangeY, y03sLowerID, y03sLowerMD, TE_orangeY_Lower]';
     writematrix(Y03s_Airfoil_Final,"Yequ03s_Airfoil_Official", "Delimiter", "\t"); 
-    NormalizedY03s_initial = Y03s_Airfoil_Final./330;
-    yVecY03s = (ones(length(NormalizedY03s_initial),1) .* (1/3) .* s)./330; %% Adding planform location;
-    NormalizedY03s = [NormalizedY03s_initial(:,1),yVecY03s,NormalizedY03s_initial(:,2)]; NormalizedY03sneg = [NormalizedY03s_initial(:,1),-yVecY03s,NormalizedY03s_initial(:,2)];
+    NormalizedY03s = Y03s_Airfoil_Final./330;
     writematrix(NormalizedY03s,"Yequ03s_Airfoil_Official_Normalized", "Delimiter", "\t");
-    writematrix(NormalizedY03sneg,"Yequ03s_Airfoil_Official_Normalized_negS", "Delimiter", "\t");
+
 
 
 %% y = 2/3s Airfoil Curve Fitting
@@ -378,11 +374,9 @@ clear, clc, close all
 
     Y06s_Airfoil_Final = [TE_greenX, xVecUpperMD_y06s, xVecUpperID_y06s, LE_greenX, xVecLowerID_y06s, xVecLowerMD_y06s, TE_greenX; ones(1,249).*(2/3) .* s; TE_greenY_Upper, y06sUpperMD, y06sUpperID, LE_greenY, y06sLowerID, y06sLowerMD, TE_greenY_Lower]';
     writematrix(Y06s_Airfoil_Final,"Yequ06s_Airfoil_Official", "Delimiter", "\t");
-    NormalizedY06s_initial = Y06s_Airfoil_Final./330;
-    yVecY06s = (ones(length(NormalizedY06s_initial),1) .* (2/3) .* s)./330; %% Adding planform location;
-    NormalizedY06s = [NormalizedY06s_initial(:,1),yVecY06s,NormalizedY06s_initial(:,2)]; NormalizedY06sneg = [NormalizedY06s_initial(:,1),-yVecY06s,NormalizedY06s_initial(:,2)];
+    NormalizedY06s = Y06s_Airfoil_Final./330;
     writematrix(NormalizedY06s,"Yequ06s_Airfoil_Official_Normalized", "Delimiter", "\t");
-    writematrix(NormalizedY06sneg,"Yequ06s_Airfoil_Official_Normalized_negS", "Delimiter", "\t");
+
 
 
 %% Comparing Fits To Extracted Data

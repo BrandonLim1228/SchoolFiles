@@ -1,0 +1,14 @@
+Wind Tunnel Dimensions - 
+-800mm(high) * 1000mm(wide)
+
+Major Airfoil Coordlength - try 400mm
+- calculate blockage - 12%limit 
+--find angle of attack to reach 12%bloackge limit 
+
+Force Transducer
+- Model: ATI Nano 25
+- Location: X_transducer = (7/24)*b*tan(A) [true for all cases?]
+
+Actuators
+- Model: https://www.servocity.com/hs-40-servo/
+- 
