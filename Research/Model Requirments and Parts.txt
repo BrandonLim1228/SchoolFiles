@@ -1,9 +1,12 @@
-Wind Tunnel Dimensions - 
--800mm(high) * 1000mm(wide)
+Wind Tunnel Dimensions 
+- 800mm(high) * 1000mm(wide)
 
 Major Airfoil Coordlength - try 400mm
 - calculate blockage - 12%limit 
---find angle of attack to reach 12%bloackge limit 
+- - Chord length of 400mm resulted in 8.7% blockage at AOA = 90 deg
+- - Chord length of 500mm results in 12% blockage at AOA = 60 deg
+- - - Find thickness in centerline for varying root chord lengths
+- - - Find thickness at 5% inset from leading edge for varying root chord lengths
 
 Force Transducer
 - Model: ATI Nano 25
@@ -11,4 +14,4 @@ Force Transducer
 
 Actuators
 - Model: https://www.servocity.com/hs-40-servo/
-- 
+
