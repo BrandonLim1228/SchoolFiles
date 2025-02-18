@@ -254,3 +254,65 @@ figure
     plot([af3X_5per_500 af3X_5per_500], [af3Y1_5per_500, af3Y2_5per_500],"linewidth",1.5, "color","g","linestyle", "-.")
     daspect([1,1,1]); xlim([-1 350]); ylim([-20 20])
     legend("Root Chord = 500mm","Max Thickness "+ num2str(t500Max)+" mm","Min Thickness "+ num2str(t500Min)+" mm", "Location", "Eastoutside")
+
+%Calculating Max AOA 
+    AreaDW = AreaWT * 0.12;
+    span = 287/330 .* rootChord;
+    MaxAOA = asin((2.*AreaDW)./(span.*rootChord)) .* 180/pi;
+
+%Plotting Max AOA
+    figure
+    subplot(5,2,[1,3,5,7,9])
+    plot([-500/1000 500/1000 500/1000 -500/1000 -500/1000], [-400/1000 -400/1000 400/1000 400/1000 -400/1000], "linewidth",3, "color","k")
+    hold on
+    plot([-0.2 0.2 0 -0.2 ],[-0.2 -0.2 0.1 -0.2],"linewidth",1.5, "color","b")
+    daspect([1,1,1]); xlim([-520/1000 520/1000]); ylim([-420/1000 420/1000]);
+    legend("Wind Tunnel Cross Section", "Projected Delta Wing Geometry", "Location", "southoutside")
+
+    subplot(5,2,2)
+    plot([0,0],[(rootChord(1)/4),-(rootChord(1)-(rootChord(1)/4))],"linewidth",1.5, "color","b")
+    hold on
+    plot(0, 0, "ro"); hold on; plot(0, 0, "rx");
+    hold on 
+    plot([-150 50], [0, 0], "LineStyle","--", "LineWidth",1.5,"color", "k")
+    set(gca,"Xdir","reverse")
+    ylim([-380 145]); xlim([-190 75]); daspect([1,5,1])
+    legend("Root Chord = 400mm","Quarter Root Chord", "", "Max AOA 90^o", "Location", "Eastoutside")
+
+
+
+    subplot(5,2,4)
+    plot([0,0],[(rootChord(2)/4),-(rootChord(2)-(rootChord(2)/4))],"linewidth",1.5, "color","b")
+    hold on
+    plot(0, 0, "ro"); hold on; plot(0, 0, "rx");
+    hold on 
+    plot([-150 50], [0, 0], "LineStyle","--", "LineWidth",1.5,"color", "k")
+    set(gca,"Xdir","reverse")
+    ylim([-380 145]); xlim([-190 75]); daspect([1,5,1])
+
+    subplot(5,2,6)
+    plot([0,0],[(rootChord(3)/4),-(rootChord(3)-(rootChord(3)/4))],"linewidth",1.5, "color","b")
+    hold on
+    plot(0, 0, "ro"); hold on; plot(0, 0, "rx");
+    hold on 
+    plot([-150 50], [0, 0], "LineStyle","--", "LineWidth",1.5,"color", "k")
+    set(gca,"Xdir","reverse")
+    ylim([-380 145]); xlim([-190 75]); daspect([1,5,1])
+
+    subplot(5,2,8)
+    plot([(rootChord(4)/4)*cosd(MaxAOA(4)),-(rootChord(4)-(rootChord(4)/4))*cosd(MaxAOA(4))],[(rootChord(4)/4)*sind(MaxAOA(4)),-(rootChord(4)-(rootChord(4)/4))*sind(MaxAOA(4))],"linewidth",1.5, "color","b")
+    hold on
+    plot(0, 0, "ro"); hold on; plot(0, 0, "rx");
+    hold on 
+    plot([-150 50], [0, 0], "LineStyle","--", "LineWidth",1.5,"color", "k")
+    set(gca,"Xdir","reverse")
+    ylim([-380 145]); xlim([-190 75]); daspect([1,5,1])
+
+    subplot(5,2,10)
+    plot([(rootChord(5)/4)*cosd(MaxAOA(5)),-(rootChord(5)-(rootChord(5)/4))*cosd(MaxAOA(5))],[(rootChord(5)/4)*sind(MaxAOA(5)),-(rootChord(5)-(rootChord(5)/4))*sind(MaxAOA(5))],"linewidth",1.5, "color","b")
+    hold on
+    plot(0, 0, "ro"); hold on; plot(0, 0, "rx");
+    hold on 
+    plot([-150 50], [0, 0], "LineStyle","--", "LineWidth",1.5,"color", "k")
+    set(gca,"Xdir","reverse")
+    ylim([-380 145]); xlim([-190 75]); daspect([1,5,1])
