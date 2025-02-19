@@ -279,8 +279,6 @@ figure
     ylim([-380 145]); xlim([-190 75]); daspect([1,5,1])
     legend("Root Chord = 400mm","Quarter Root Chord", "", "Max AOA 90^o", "Location", "Eastoutside")
 
-
-
     subplot(5,2,4)
     plot([0,0],[(rootChord(2)/4),-(rootChord(2)-(rootChord(2)/4))],"linewidth",1.5, "color","b")
     hold on
