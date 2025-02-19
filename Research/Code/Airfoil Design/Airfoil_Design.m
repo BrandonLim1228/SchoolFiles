@@ -120,6 +120,8 @@ figure
     text(correspondingX500+5,10, "Max Thickness = " + num2str(thickness_max500));
     xlim([-10 510]); ylim([-35 40])
     legend("Root Airfoil","","Quarter Chord","", "Root Chord = 500mm","location", "eastoutside")
+
+    sgtitle("Root Chord Lengths and Maximum Thickness")
     
 %LE 5% cut thickness calculation
     af1X_5per = rootChord .* LE_percentage;
@@ -255,18 +257,28 @@ figure
     daspect([1,1,1]); xlim([-1 350]); ylim([-20 20])
     legend("Root Chord = 500mm","Max Thickness "+ num2str(t500Max)+" mm","Min Thickness "+ num2str(t500Min)+" mm", "Location", "Eastoutside")
 
+    sgtitle("Root Chord Lengths & Cut Thickness for 5% Leading Edge Inset")
+
 %Calculating Max AOA 
     AreaDW = AreaWT * 0.12;
     span = 287/330 .* rootChord;
     MaxAOA = asin((2.*AreaDW)./(span.*rootChord)) .* 180/pi;
 
+    format longg
+%Calculating Blockage in percent
+    Blockage400 = ((1/2) * span(1) * rootChord(1))/ AreaWT * 100; 
+    Blockage425 = ((1/2) * span(2) * rootChord(2))/ AreaWT * 100; 
+    Blockage450 = ((1/2) * span(3) * rootChord(3))/ AreaWT * 100; 
+    Blockage475 = ((1/2) * span(4) * rootChord(4) *sind(MaxAOA(4))) / AreaWT * 100;
+    Blockage500 = ((1/2) * span(5) * (rootChord(5) *sind(MaxAOA(5))))/ AreaWT * 100;
+
 %Plotting Max AOA
     figure
     subplot(5,2,[1,3,5,7,9])
-    plot([-500/1000 500/1000 500/1000 -500/1000 -500/1000], [-400/1000 -400/1000 400/1000 400/1000 -400/1000], "linewidth",3, "color","k")
+    plot([-500 500 500 -500 -500], [-400 -400 400 400 -400], "linewidth",3, "color","k")
     hold on
-    plot([-0.2 0.2 0 -0.2 ],[-0.2 -0.2 0.1 -0.2],"linewidth",1.5, "color","b")
-    daspect([1,1,1]); xlim([-520/1000 520/1000]); ylim([-420/1000 420/1000]);
+    plot([-200 200 0 -200 ],[-200 -200 100 -200],"linewidth",1.5, "color","b")
+    daspect([1,1,1]); xlim([-520 520]); ylim([-420 420]);
     legend("Wind Tunnel Cross Section", "Projected Delta Wing Geometry", "Location", "southoutside")
 
     subplot(5,2,2)
@@ -275,9 +287,12 @@ figure
     plot(0, 0, "ro"); hold on; plot(0, 0, "rx");
     hold on 
     plot([-150 50], [0, 0], "LineStyle","--", "LineWidth",1.5,"color", "k")
+    hold on
+    plot([-190 75], [400 400], "linewidth",3, "color","k"); plot([-190 75], [-400 -400], "linewidth",3, "color","k");
     set(gca,"Xdir","reverse")
-    ylim([-380 145]); xlim([-190 75]); daspect([1,5,1])
+    ylim([-420 420]); xlim([-190 75]); 
     legend("Root Chord = 400mm","Quarter Root Chord", "", "Max AOA 90^o", "Location", "Eastoutside")
+    text(-50, 200, "Blockage = 8.7%")
 
     subplot(5,2,4)
     plot([0,0],[(rootChord(2)/4),-(rootChord(2)-(rootChord(2)/4))],"linewidth",1.5, "color","b")
@@ -285,8 +300,12 @@ figure
     plot(0, 0, "ro"); hold on; plot(0, 0, "rx");
     hold on 
     plot([-150 50], [0, 0], "LineStyle","--", "LineWidth",1.5,"color", "k")
+    hold on
+    plot([-190 75], [400 400], "linewidth",3, "color","k"); plot([-190 75], [-400 -400], "linewidth",3, "color","k");
     set(gca,"Xdir","reverse")
-    ylim([-380 145]); xlim([-190 75]); daspect([1,5,1])
+    ylim([-420 420]); xlim([-190 75]);
+    legend("Root Chord = 425mm","Quarter Root Chord", "", "Max AOA 90^o", "Location", "Eastoutside")
+    text(-50, 200, "Blockage = 9.8%")
 
     subplot(5,2,6)
     plot([0,0],[(rootChord(3)/4),-(rootChord(3)-(rootChord(3)/4))],"linewidth",1.5, "color","b")
@@ -294,8 +313,12 @@ figure
     plot(0, 0, "ro"); hold on; plot(0, 0, "rx");
     hold on 
     plot([-150 50], [0, 0], "LineStyle","--", "LineWidth",1.5,"color", "k")
+    hold on
+    plot([-190 75], [400 400], "linewidth",3, "color","k"); plot([-190 75], [-400 -400], "linewidth",3, "color","k");
     set(gca,"Xdir","reverse")
-    ylim([-380 145]); xlim([-190 75]); daspect([1,5,1])
+    ylim([-420 420]); xlim([-190 75]);
+    legend("Root Chord = 450mm","Quarter Root Chord", "", "Max AOA 90^o", "Location", "Eastoutside")
+    text(-50, 200, "Blockage = 11%")
 
     subplot(5,2,8)
     plot([(rootChord(4)/4)*cosd(MaxAOA(4)),-(rootChord(4)-(rootChord(4)/4))*cosd(MaxAOA(4))],[(rootChord(4)/4)*sind(MaxAOA(4)),-(rootChord(4)-(rootChord(4)/4))*sind(MaxAOA(4))],"linewidth",1.5, "color","b")
@@ -303,8 +326,12 @@ figure
     plot(0, 0, "ro"); hold on; plot(0, 0, "rx");
     hold on 
     plot([-150 50], [0, 0], "LineStyle","--", "LineWidth",1.5,"color", "k")
+    hold on
+    plot([-190 75], [400 400], "linewidth",3, "color","k"); plot([-190 75], [-400 -400], "linewidth",3, "color","k");
     set(gca,"Xdir","reverse")
-    ylim([-380 145]); xlim([-190 75]); daspect([1,5,1])
+    ylim([-420 420]); xlim([-190 75]);
+    legend("Root Chord = 475mm","Quarter Root Chord", "", "Max AOA 78^o", "Location", "Eastoutside")
+    text(-50, 200, "Blockage = 12%")
 
     subplot(5,2,10)
     plot([(rootChord(5)/4)*cosd(MaxAOA(5)),-(rootChord(5)-(rootChord(5)/4))*cosd(MaxAOA(5))],[(rootChord(5)/4)*sind(MaxAOA(5)),-(rootChord(5)-(rootChord(5)/4))*sind(MaxAOA(5))],"linewidth",1.5, "color","b")
@@ -312,5 +339,11 @@ figure
     plot(0, 0, "ro"); hold on; plot(0, 0, "rx");
     hold on 
     plot([-150 50], [0, 0], "LineStyle","--", "LineWidth",1.5,"color", "k")
+    hold on
+    plot([-190 75], [400 400], "linewidth",3, "color","k"); plot([-190 75], [-400 -400], "linewidth",3, "color","k");
     set(gca,"Xdir","reverse")
-    ylim([-380 145]); xlim([-190 75]); daspect([1,5,1])
+    ylim([-420 420]); xlim([-190 75]);
+    legend("Root Chord = 500mm","Quarter Root Chord", "", "Max AOA 62^o", "Location", "Eastoutside")
+    text(-50, 200, "Blockage = 12%")
+
+    sgtitle("Root Chord Lengths & Maximum AOA for 12% Tunnel Blockage")
