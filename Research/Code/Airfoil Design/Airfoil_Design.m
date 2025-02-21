@@ -347,3 +347,9 @@ figure
     text(-50, 200, "Blockage = 12%")
 
     sgtitle("Root Chord Lengths & Maximum AOA for 12% Tunnel Blockage")
+
+%% Saving airfoils for CAD
+
+writematrix(airfoil1 .* 450, "Airfoil1", "Delimiter","\t");
+writematrix(airfoil2 .* 450, "Airfoil2", "Delimiter","\t");
+writematrix(airfoil3 .* 450, "Airfoil3", "Delimiter","\t");
