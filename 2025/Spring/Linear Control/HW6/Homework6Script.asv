@@ -1,0 +1,27 @@
+%% Brandon Lim - HW6
+clear, clc, close all
+
+A = [-3 1 0 0; 0 -3 1 0; 0 0 -3 0; 0 0 0 -6];
+B = [0; 0; 2; -2];
+C = [1 1 1 1];
+D = 0;
+x0 = [ 10; -8; -4; 5];
+t = 0:0.001:10;
+u1 = ones(size(t));
+u2 = zeros(size(t));
+
+sys = ss(A,B,C,D);
+[y1,t,x1] = lsim(sys,u1,t,x0);
+[y2,t,x2] = lsim(sys,u2,t,x0);
+
+figure
+plot(t,x1(:,1))
+xlabel("Time [sec]")
+ylabel("Output")
+title("Unit Step Response")
+
+figure
+plot(t,y2)
+xlabel("Time [sec]")
+ylabel("Output")
+title("Zero Input Response")
