@@ -353,3 +353,9 @@ figure
 writematrix(airfoil1 .* 450, "Airfoil1", "Delimiter","\t");
 writematrix(airfoil2 .* 450, "Airfoil2", "Delimiter","\t");
 writematrix(airfoil3 .* 450, "Airfoil3", "Delimiter","\t");
+
+Airfoil2 = airfoil2 .* 450;
+Airfoil3 = airfoil3 .* 450;
+
+Cr2 = Airfoil2(1,1) - min(Airfoil2(:,1))
+Cr3 = Airfoil3(1,1) - min(Airfoil3(:,1))
