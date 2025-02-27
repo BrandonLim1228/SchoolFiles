@@ -68,10 +68,10 @@ Vbp = sqrt(2*gamma/(gamma-1) * etaNBP * R * Tt13 * (1-(Po/Pt13)^((gamma-1)/gamma
 Vo = Mo * sqrt(gamma*R*To);
 
 %Specific Thrust
-ThrustSpec = BPR * (Vbp-Vo) + (Vec-Vo)
+ThrustSpec = BPR * (Vbp-Vo) + (Vec-Vo);
 
 %Specific Thrust Fuel Consumption
-tstf = (phi*rFAst)/ThrustSpec
+tstf = (phi*rFAst)/ThrustSpec;
 
 %% n
 %Brandon Lim, PSET06 Aerospace Propulsion
@@ -150,11 +150,14 @@ ThrustSpec = BPR .* (Vbp-Vo) + (Vec-Vo);
 tstf = (phi.*rFAst)./ThrustSpec;
 
 figure
-plot(rp, ThrustSpec)
+plot(rp, ThrustSpec, "LineWidth",1.5)
+xlabel("Compressor Pressure Ratio"); ylabel("Specific Net Thrust [Ns/kg]"); title("Compressor Pressure Ratio vs Specific Net Thrust")
+legend("BPR = 12.5", "location", "southeast")
 
 figure
-plot(rp,tstf)
-
+plot(rp,tstf, "LineWidth",1.5)
+xlabel("Compressor Pressure Ratio"); ylabel("Thrust Specific Fuel Consumption [Kg/Ns]"); title("Compressor Pressure Ratio vs Thrust Specific Fuel Consumption")
+legend("BPR = 12.5", "location", "southeast")
 %% o
 %Brandon Lim, PSET06 Aerospace Propulsion
 clear, clc, close all
@@ -231,4 +234,6 @@ ThrustSpec = BPR .* (Vbp-Vo) + (Vec-Vo);
 %Specific Thrust Fuel Consumption
 tstf = (phi.*rFAst)./ThrustSpec;
 
-plot(BPR,ThrustSpec)
+plot(BPR,ThrustSpec, "linewidth", 1.5)
+xlabel("BPR"); ylabel("Thrust Specific Fuel Consumption [Kg/Ns]"); title("BPR vs Thrust Specific Fuel Consumption")
+legend("r_p = 60", "location", "southeast")
