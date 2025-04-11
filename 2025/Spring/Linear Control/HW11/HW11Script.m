@@ -168,7 +168,7 @@ title("Iteration 2: Force vs Time")
 xlabel("Time[sec]"); ylabel("Force [N]")
 
 R = [50*(1/F)^2];
-Q = [100*(1/xi)^2 0; 0 500*(1/xi)^2];
+Q = 10*[100*(1/xi)^2 0; 0 500*(1/xi)^2];
 
 [K,~,~] = lqr(A,B,Q,R);
 
@@ -182,14 +182,14 @@ u = -K * transpose(x3);
 figure
 subplot(3,1,1)
 plot(t,y3(:,1))
-title("Iteration 2: Velocity vs Time")
+title("Iteration 3: Velocity vs Time")
 xlabel("Time[sec]"); ylabel("Velocity [m/s]")
 subplot(3,1,2)
 plot(t,y3(:,2))
-title("Iteration 2: Position vs Time")
+title("Iteration 3: Position vs Time")
 xlabel("Time[sec]"); ylabel("Position [m]")
 subplot(3,1,3)
 plot(t,u)
-title("Iteration 2: Force vs Time")
+title("Iteration 3: Force vs Time")
 xlabel("Time[sec]"); ylabel("Force [N]")
 
