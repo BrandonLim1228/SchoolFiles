@@ -1,29 +1,33 @@
 clear, clc, close all
 
-% P5
+%% Probelm 5
 A = [-2 1; -1 -3];
 B = [1; 0];
 
 Co = ctrb(A,B)
-rank(Co)
+rank_Co = rank(Co)
 
-%%
+%% Problem 6
 A = [1 0; 0 -2];
 B = [1;-1];
 K = [0 1]* [(2/3) (-1/3); (1/3) (1/3)] * [3.25 0; 0 3.25];
 
 ACL = (A-B*K);
+c = [1 0; 0 1];
+x0 = [1;0];
+sys = ss(ACL,[],c,[]);
 
-sys = ss(ACL, B, [1 0; 0 1], [0]);
-t = linspace(0,50,100);
-u = zeros(1,length(t));
+[y,tOut,x] = initial(sys,x0);
 
 figure
-lsim(sys,u,t, [1 0])
+subplot(2,1,1)
+plot(tOut, y(:,1))
+xlabel("Time [Sec]"); ylabel("Amplitude"); title("x_1")
+subplot(2,1,2)
+plot(tOut, y(:,2))
+xlabel("Time [Sec]"); ylabel("Amplitude"); title("x_2")
+sgtitle("Simulated Response Of Closed Loop System")
 
-%%
-B = [5 -4 2; -1 2 3; -2 1 0]
-norm(B,1)
-norm(B,inf)
-
+%% Problem 8
+eig([3 -1 0; -1 2 -1; 0 -1 3])
 
