@@ -38,7 +38,6 @@ w = [0;w];
 G = [G(1); G]; % Even G
 G_jq = conj(G); % The conjugate of the even TF (G)
 ome_g = w*2*pi; % get the omega of G_ff and G
-close all
 %% Create your optimal inversion code below -- please follow the process flow described in homework.
 
 %Step 1
@@ -47,32 +46,39 @@ Q(0<w & w<130) = 1;
 Q(w>130) = 0;
 R(0<w & w<130) = 0;
 R(w>130) = 1;
+Q = Q';
+R = R';
 
 for i = 1:length(w)
-    Gff(i) = (G_jq(i)*Q(i))/(R(i) + G_jq(i)*Q(i)*G(i));
+    Gff(i,1) = (G_jq(i)*Q(i))/(R(i) + G_jq(i)*Q(i)*G(i));
 end
-
-N = length(yd);
-Fs = SamplingFreq;
-omega = 2*pi*(0:N-1)*(Fs/N);   % rad/s
-
-G_real = interp1(ome_g, real(G), omega, 'linear', 0);
-G_imag = interp1(ome_g, imag(G), omega, 'linear', 0);
-G_interp = G_real + 1i*G_imag;
-
-Gff_real = interp1(ome_g, real(Gff), omega, 'linear', 0);
-Gff_imag = interp1(ome_g, imag(Gff), omega, 'linear', 0);
-Gff_interp = Gff_real + 1i*Gff_imag;
 
 %Step 2
-% Comput FFT of Yd
+%Cleaning up Yd for fft
+I1 = find(t == 15);
+I2 = find(t == 45);
+yd = yd(I1:I2);
+
 Yd_jw = fft(yd);
+N = length(yd);
+Fs = 500;
+Fn = Fs/2;
+ffft = (0:Fs/N:Fn);
+mag = 2*abs(Yd_jw(1:length(ffft)))/N;
 
-for i = 1:length(Gff_interp)
-    Uopt_jw(i) = Gff_interp(i) * Yd_jw(i);
-    Yopt_jw(i) = G_interp(i) * Uopt_jw(i);
-end
+Gff_interp = interp1(ome_g, Gff, ffft*2*pi, "linear",0);
+G_interp = interp1(ome_g, G, ffft*2*pi, "linear",0);
 
-yopt = ifft(Yopt_jw);
+Uopt_jw = Gff_interp .* Yd_jw;
+Yopt_jw = G_interp .* Uopt_jw;
+
+yd_opt = ifft(Yopt_jw);
+
+figure
+hold on
+plot(t(I1:I2),yd_opt)
+% plot(t(I1:I2),yd, "-r")
+legend("yd opt", "yd")
+% 
 
 
