@@ -2,7 +2,7 @@ clear,clc,close all
 syms s
 
 %Original System
-A = [-1.169 -50.3 -49.94 -685.3 -391.7 -1952;
+A = [-1.169 -50.3 -45.94 -685.3 -391.7 -1952;
     1 0 0 0 0 0;
     0 1 0 0 0 0;
     0 0 1 0 0 0;
@@ -30,7 +30,7 @@ sys_new = ss(A_new,B_new,C,D);
 sys_org = ss(A,B,C,D);
 
 %Eigen Values
-eig(A);
+eig(A)
 eig(A_new);
 
 %New Transfer Function
@@ -45,6 +45,7 @@ yddot(t>=3 & t<4) = 1;
 yddot(t>=4 ) = 0;
 
 ydot = cumtrapz(t,yddot);
+plot(t,yddot)
 
 
 [yd, t, xref] = lsim(sys_new,yddot,t);
@@ -54,17 +55,17 @@ plot(t, yd)
 plot(t,ydot)
 plot(t,xref)
 legend("$Y_d$", "$\dot{Y}_d$", "$x_1$", "$x_2$", "$x_3$", "$x_4$", "$x_5$", "$x_6$","Interpreter", "Latex")
-xlabel("Time [sec]"); ylabel("Response"); title("$y_d, \dot{y}_d, x_{ref}$ vs Time", "Interpreter","latex")
+xlabel("Time"); ylabel("Response"); title("$y_d, \dot{y}_d, x_{ref}$ vs Time", "Interpreter","latex")
 
 uff = inv(C*A*B) .* (yddot - C*A*A*xref');
 figure
 plot(t,uff)
-xlabel("Time [sec]"); ylabel("$U_{ff}$", "Interpreter","latex"); title("Input vs Time")
+xlabel("Time"); ylabel("$U_{ff}$", "Interpreter","latex"); title("Input vs Time")
 
 [yopt,t,x] = lsim(sys_org,uff,t);
 figure
 hold on
 plot(t,yopt)
 plot(t,yd)
-xlabel("Time [sec]"); ylabel("Response"); title("Desired Reference and True Reference vs Time")
+xlabel("Time"); ylabel("Response"); title("Desired Reference and True Reference vs Time")
 legend("Output from $u_{ff}$", "Reference Input", "Interpreter","latex")
