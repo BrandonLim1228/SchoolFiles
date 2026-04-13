@@ -106,7 +106,17 @@ for k = 1:10:length(t)
 end
 
 %% Optimal Control 
-clear, clc, 
+%Figure Defaults
+set(groot, 'defaultLegendInterpreter', 'latex')
+set(groot, 'defaultTextInterpreter', 'latex')
+set(groot, 'defaultAxesTickLabelInterpreter', 'latex')
+set(groot, 'defaultColorbarTickLabelInterpreter', 'latex')
+set(groot, 'defaultAxesFontSize', 17)
+set(groot, 'defaultAxesFontWeight', 'bold')
+set(groot, 'defaultFigureColor', [1.0 1.0 1.0])
+set(groot, 'defaultFigurePosition', [450 85 1176 864])
+
+clear, clc, close all
 %States (In order):
     % Phi - Roll angle
     % Beta - Side slip angle
@@ -131,15 +141,15 @@ D = [0 0;
 sys = ss(A,B,C,D);
 
 %Cost Function Weightings
-F = [5000 0 0 0;
+F = [1 0 0 0;
     0 0 0 0;
     0 0 0 0;
     0 0 0 1];
 Q = [1 0 0 0;
     0 0 0 0;
     0 0 0 0;
-    0 0 0 1000];
-R = [0.001 0;
+    0 0 0 1];
+R = [1 0;
     0 1];
 
 %Time vector
@@ -182,16 +192,26 @@ end
 
 psi = cumtrapz(t, x(4,:)); % integrate yaw rate
 
-figure
-hold on
-plot(t,(180/pi).*x(1,:))
-plot(t,psi.*(180/pi))
-legend("Roll Angle", "Yaw Angle", "Location","northwest")
-grid on
+
+z = [3*t; zeros(length(t),1)'; zeros(length(t),1)'; zeros(length(t),1)'];
+
 
 figure
-plot(t,(180/pi).*u)
-legend("Aileron Deflection Angle", "Rudder Defelection Angle")
+subplot(1,2,1)
+hold on
+plot(t,(180/pi).*x(1,:), "Color", [0 0 204]./255, "LineWidth",2)
+plot(t,psi.*(180/pi), "Color", [255 153 51]./255, "LineWidth",2)
+plot(t,z(1,:),"--", "Color", [0 0 204]./255, "LineWidth",2)
+plot(t,z(4,:), "--", "Color", [255 153 51]./255, "LineWidth",2)
+legend("Roll Angle", "Yaw Angle", "Location","southoutside")
+grid on
+
+subplot(1,2,2)
+hold on
+plot(t,(180/pi).*u(1,:), "Color", [0 0 204]./255, "LineWidth",2)
+plot(t,(180/pi).*u(2,:), "Color", [255 153 51]./255, "LineWidth",2)
+legend("Aileron Deflection Angle", "Rudder Defelection Angle", "Location","southoutside")
+grid on
 
 function dpdt = pFun(t,A,P,E,V)
     [n,n] = size(A);
@@ -215,25 +235,25 @@ function dxdt = xFun(t,A,E,P,x,g)
 end
 
 %% Figure Generation for the paper
-clc, close all
-%Figure Defaults
-set(groot, 'defaultLegendInterpreter', 'latex')
-set(groot, 'defaultTextInterpreter', 'latex')
-set(groot, 'defaultAxesTickLabelInterpreter', 'latex')
-set(groot, 'defaultColorbarTickLabelInterpreter', 'latex')
-set(groot, 'defaultAxesFontSize', 17)
-set(groot, 'defaultAxesFontWeight', 'bold')
-set(groot, 'defaultFigureColor', [1.0 1.0 1.0])
-set(groot, 'defaultFigurePosition', [450 85 1176 864])
-
-z = [3*t; zeros(length(t),1)'; zeros(length(t),1)'; zeros(length(t),1)'];
-
-figure
-hold on
-plot(t,z(1,:),"--", "Color", [0 0 204]./255, "LineWidth",2)
-plot(t,z(4,:), "--", "Color", [255 153 51]./255, "LineWidth",2)
-xlabel("Time [sec]"); ylabel("Angle [$^\circ$]"); title("Desired State Trajectory vs Time");
-legend("Roll Angle", "Yaw Angle", "Location","southoutside", "Orientation","horizontal")
-ylim([-1 30]); grid on
-
-exportgraphics(gcf,'Desired State Trajectory.pdf','ContentType','vector')
+% clc, close all
+% %Figure Defaults
+% set(groot, 'defaultLegendInterpreter', 'latex')
+% set(groot, 'defaultTextInterpreter', 'latex')
+% set(groot, 'defaultAxesTickLabelInterpreter', 'latex')
+% set(groot, 'defaultColorbarTickLabelInterpreter', 'latex')
+% set(groot, 'defaultAxesFontSize', 17)
+% set(groot, 'defaultAxesFontWeight', 'bold')
+% set(groot, 'defaultFigureColor', [1.0 1.0 1.0])
+% set(groot, 'defaultFigurePosition', [450 85 1176 864])
+% 
+% z = [3*t; zeros(length(t),1)'; zeros(length(t),1)'; zeros(length(t),1)'];
+% 
+% figure
+% hold on
+% plot(t,z(1,:),"--", "Color", [0 0 204]./255, "LineWidth",2)
+% plot(t,z(4,:), "--", "Color", [255 153 51]./255, "LineWidth",2)
+% xlabel("Time [sec]"); ylabel("Angle [$^\circ$]"); title("Desired State Trajectory vs Time");
+% legend("Roll Angle", "Yaw Angle", "Location","southoutside", "Orientation","horizontal")
+% ylim([-1 30]); grid on
+% 
+% exportgraphics(gcf,'Desired State Trajectory.pdf','ContentType','vector')
