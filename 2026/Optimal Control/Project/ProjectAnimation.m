@@ -40,11 +40,11 @@ Fuselage = [-0.5 10; -0.013 -0.013; 0.0500035 0.0500035];
 
 
 view1 = -90;
-view2 = 22;
+view2 = 20;
 
 figure('WindowState','maximized')
 
-plt1 = subplot(1,2,1); hold on
+plt1 = subplot(1,3,1); hold on
 set(gca,'ZDir','reverse'); axis equal; grid on;
 xlabel('X'); ylabel('Y'); zlabel('Z')
 xlim([-1.2 1.2]); ylim([-1.2 1.2]); zlim([-1.2 1.2])
@@ -61,23 +61,23 @@ set(sw_raw,'XData',sw(1,:), 'YData',sw(2,:), 'ZData',sw(3,:))
 heading_raw = plot3(plt1, heading(1,:), heading(2,:), heading(3,:), 'r--', 'LineWidth', 2);
 set(heading_raw,'XData',heading(1,:), 'YData',heading(2,:), 'ZData',heading(3,:))
 
-% plt2 = subplot(1,3,2); hold on
-% set(gca,'ZDir','reverse'); axis equal; grid on;
-% xlabel('X'); ylabel('Y'); zlabel('Z')
-% xlim([-1.2 1.2]); ylim([-1.2 1.2]); zlim([-1.2 1.2])
-% view(view1,35); camlight; lighting gouraud
-% 
-% wing_raw =  plot3(plt2, wing(1,:), wing(2,:), wing(3,:), 'r--', 'LineWidth', 2);
-% set(wing_raw,'XData',wing(1,:), 'YData',wing(2,:), 'ZData',wing(3,:))
-% fus_raw =  plot3(plt2, Fuselage(1,:), Fuselage(2,:), Fuselage(3,:), 'r--', 'LineWidth', 2);
-% set(fus_raw,'XData',Fuselage(1,:), 'YData',Fuselage(2,:), 'ZData',Fuselage(3,:))
-% 
-% wing_opt =  plot3(plt2, wing(1,:), wing(2,:), wing(3,:), 'b--', 'LineWidth', 2);
-% set(wing_opt,'XData',wing(1,:), 'YData',wing(2,:), 'ZData',wing(3,:))
-% fus_opt =  plot3(plt2, Fuselage(1,:), Fuselage(2,:), Fuselage(3,:), 'b--', 'LineWidth', 2);
-% set(fus_opt,'XData',Fuselage(1,:), 'YData',Fuselage(2,:), 'ZData',Fuselage(3,:))
+plt2 = subplot(1,3,2); hold on
+set(gca,'ZDir','reverse'); axis equal; grid on;
+xlabel('X'); ylabel('Y'); zlabel('Z')
+xlim([-1.2 1.2]); ylim([-1.2 1.2]); zlim([-1.2 1.2])
+view(view1,view2); camlight; lighting gouraud
 
-plt3 = subplot(1,2,2); hold on
+wing_raw =  plot3(plt2, wing(1,:), wing(2,:), wing(3,:), 'r--', 'LineWidth', 2);
+set(wing_raw,'XData',wing(1,:), 'YData',wing(2,:), 'ZData',wing(3,:))
+fus_raw =  plot3(plt2, Fuselage(1,:), Fuselage(2,:), Fuselage(3,:), 'r--', 'LineWidth', 2);
+set(fus_raw,'XData',Fuselage(1,:), 'YData',Fuselage(2,:), 'ZData',Fuselage(3,:))
+
+wing_opt =  plot3(plt2, wing(1,:), wing(2,:), wing(3,:), 'b--', 'LineWidth', 2);
+set(wing_opt,'XData',wing(1,:), 'YData',wing(2,:), 'ZData',wing(3,:))
+fus_opt =  plot3(plt2, Fuselage(1,:), Fuselage(2,:), Fuselage(3,:), 'b--', 'LineWidth', 2);
+set(fus_opt,'XData',Fuselage(1,:), 'YData',Fuselage(2,:), 'ZData',Fuselage(3,:))
+
+plt3 = subplot(1,3,3); hold on
 set(gca,'ZDir','reverse'); axis equal; grid on; 
 xlabel('X'); ylabel('Y'); zlabel('Z')
 xlim([-1.2 1.2]); ylim([-1.2 1.2]); zlim([-1.2 1.2])
@@ -94,24 +94,24 @@ set(sw_opt,'XData',sw(1,:), 'YData',sw(2,:), 'ZData',sw(3,:))
 heading_opt = plot3(plt3, heading(1,:), heading(2,:), heading(3,:), 'b--', 'LineWidth', 2);
 set(heading_opt,'XData',heading(1,:), 'YData',heading(2,:), 'ZData', heading(3,:))
 
-% legend(plt2,"Aileron Step Input Attitude Indicator","", "Optimal Input Attitude Indicator", "location","southoutside")
-%Showing the time progression
-title(plt1,"Aileron Step Input")
-% title(plt2,"Attitude Comparison")
+title(plt1,"Non-Optimal Baseline Input")
+title(plt2,"Attitude Comparison")
 title(plt3,"Optimal Input")
 
-headingC_raw = plot3(plt3, heading(1,:), heading(2,:), heading(3,:), 'r--', 'LineWidth', 2);
-headingC_opt = plot3(plt1, heading(1,:), heading(2,:), heading(3,:), 'b--', 'LineWidth', 2);
+%Showing the time progression
 
-% 
-% h_time = annotation('textbox',[0.45 0.93 0.1 0.05], ...
-%     'String','t = 0.00 s', ...
-%     'EdgeColor','none', ...
-%     'HorizontalAlignment','center', ...
-%     'FontSize',18, ...
-%     'FontWeight','bold');
+h_time = annotation('textbox',[0.45 0.93 0.1 0.05], ...
+    'String','t = 0.00 s', ...
+    'EdgeColor','none', ...
+    'HorizontalAlignment','center', ...
+    'FontSize',18, ...
+    'FontWeight','bold');
 
 tic
+
+v = VideoWriter('BackView.mp4','MPEG-4');
+v.FrameRate = 30;
+open(v);
 for k = 1:10:length(t)
 
     %Rotating Original Geometry through rotational matricies
@@ -126,10 +126,10 @@ for k = 1:10:length(t)
     set(sw_raw,'XData',swR_raw(1,:), 'YData',swR_raw(2,:), 'ZData',swR_raw(3,:))
     headingR_raw = R_raw * heading;
     set(heading_raw,'XData',headingR_raw(1,:), 'YData',headingR_raw(2,:), 'ZData',headingR_raw(3,:))
-    % wingR_raw = R_raw * wing;
-    % set(wing_raw,'XData',wingR_raw(1,:), 'YData',wingR_raw(2,:), 'ZData',wingR_raw(3,:))
-    % Fuse_raw = R_raw * Fuselage;
-    % set(fus_raw,'XData',Fuse_raw(1,:), 'YData',Fuse_raw(2,:), 'ZData',Fuse_raw(3,:))
+    wingR_raw = R_raw * wing;
+    set(wing_raw,'XData',wingR_raw(1,:), 'YData',wingR_raw(2,:), 'ZData',wingR_raw(3,:))
+    Fuse_raw = R_raw * Fuselage;
+    set(fus_raw,'XData',Fuse_raw(1,:), 'YData',Fuse_raw(2,:), 'ZData',Fuse_raw(3,:))
 
     %Rotating Original Geometry through rotational matricies
     phi_opt_k = phi_opt(k);
@@ -143,25 +143,27 @@ for k = 1:10:length(t)
     set(sw_opt,'XData',swR_opt(1,:), 'YData',swR_opt(2,:), 'ZData',swR_opt(3,:))
     headingR_opt = R_opt * heading;
     set(heading_opt,'XData',headingR_opt(1,:), 'YData',headingR_opt(2,:), 'ZData',headingR_opt(3,:))
-    % wingR_opt = R_opt * wing;
-    % set(wing_opt,'XData',wingR_opt(1,:), 'YData',wingR_opt(2,:), 'ZData',wingR_opt(3,:))
-    % Fuse_opt = R_opt * Fuselage;
-    % set(fus_opt,'XData',Fuse_opt(1,:), 'YData',Fuse_opt(2,:), 'ZData',Fuse_opt(3,:))
+    wingR_opt = R_opt * wing;
+    set(wing_opt,'XData',wingR_opt(1,:), 'YData',wingR_opt(2,:), 'ZData',wingR_opt(3,:))
+    Fuse_opt = R_opt * Fuselage;
+    set(fus_opt,'XData',Fuse_opt(1,:), 'YData',Fuse_opt(2,:), 'ZData',Fuse_opt(3,:))
     
-    set(headingC_raw,'XData',headingR_raw(1,:), 'YData',headingR_raw(2,:), 'ZData',headingR_raw(3,:))
-    set(headingC_opt,'XData',headingR_opt(1,:), 'YData',headingR_opt(2,:), 'ZData',headingR_opt(3,:))
 
     %Re-orienting the original render
     set(p_raw,'Vertices',V_rot_raw)
     set(p_opt,'Vertices',V_rot_opt)
 
-    % % % set(h_time,'String',sprintf('t = %.2f s', t(k)))
+    set(h_time,'String',sprintf('t = %.2f s', t(k)))
     drawnow
 
+    frame = getframe(gcf);
+    writeVideo(v,frame);
+
+    frame = getframe(gcf);
+    im = frame2im(frame);
+    imwrite(im,'back_final_frame.jpg');
     while toc < t(k)/3
     end
 end
-% set(gcf,'Units','inches','Position',[0 0 10 6])  % width x height
-lg1 = legend(plt1,"","Aileron Step Input Attitude Indicator","","","Optimal Input Attitude Indicator", "location","southoutside");
-lg1.Position = [0.3 0.02 0.4 0.05];
-exportgraphics(gcf,'Sim.pdf','ContentType','vector')
+
+close(v)

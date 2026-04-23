@@ -58,8 +58,6 @@ u = [delta_a delta_r];
 phi_raw = rad2deg(y(:,1)); % deg
 psi_raw = cumtrapz(t,rad2deg(y(:,4))); % deg
 
-writematrix([phi_raw, psi_raw], "Raw")
-
 z = [(2*t),zeros(length(t),1), zeros(length(t),1), zeros(length(t),1)];
 
 %Plotting Progression
@@ -84,7 +82,6 @@ yline(30,"--k");yline(-30,"--k")
 legend("$\delta_{a}$", "$\delta_{r}$", "$\delta_{lim}$", "Location","northwest")
 
 set(gcf,'Units','inches','Position',[0 0 10 6])  % width x height
-exportgraphics(gcf,'Baseline.pdf','ContentType','vector')
 
 
 %% Optimal Control 
@@ -133,14 +130,14 @@ sys = ss(A,B,C,D);
 
 
 %Cost Function Weightings
-F = [600 0 0 0;
+F = [10500 0 0 0;
     0 0 0 0;
     0 0 0 0;
-    0 0 0 1];
+    0 0 0 10000];
 Q = [1 0 0 0;
     0 0 0 0;
     0 0 0 0;
-    0 0 0 450];
+    0 0 0 10000];
 R = [1 0;
     0 1];
 %Time vector
@@ -195,7 +192,6 @@ psi = cumtrapz(t, x(4,:));
 psi_opt = rad2deg(psi)';
 phi_opt = rad2deg(x(1,:))';
 
-writematrix([phi_opt,psi_opt], "Opt")
 
 z = [2*t; zeros(length(t),1)'; zeros(length(t),1)'; zeros(length(t),1)'];
 
@@ -220,7 +216,7 @@ yline(30,"--k");yline(-30,"--k")
 legend("$\delta_{a}$", "$\delta_{r}$", "$\delta_{lim}$", "Location","northwest")
 
 set(gcf,'Units','inches','Position',[0 0 10 6])  % width x height
-exportgraphics(gcf,'W3.pdf','ContentType','vector')
+%exportgraphics(gcf,'W3.pdf','ContentType','vector')
 
 function dpdt = pFun(t,A,P,E,V)
     [n,n] = size(A);
@@ -249,15 +245,28 @@ function dhdt = hFun(t,E,g,z,Q)
 
     dhdt = -(1/2) * g'*E*g - (1/2) * z_current'*Q*z_current;
 end
-
 %%
+orange = [245, 170, 66]./255;
+purple = [90, 30, 168]./255;
+red = [168, 46, 30]./255;
 
 figure
-title("Desired State Trajectory vs Time");xlabel("Time [sec]"); ylabel("Attitude Angle [$^\circ$]")
-ylim([0 25]); grid on
+subplot(1,2,1)
+title("Optimal States vs Time");xlabel("Time [sec]"); ylabel("Attitude Angle [$^\circ$]")
+ylim([-1 22]); grid on
 hold on
-plot(t,z(1,:),"--", "Color", blue)
-plot(t,z(4,:), "--", "Color", green)
-legend("$\phi_{des}$", "$\psi_{des}$", "numColumns",2, "Location","southoutside")
-set(gcf,'Units','inches','Position',[0 0 10 6])  % width x height
-exportgraphics(gcf,'Desired State Trajectory.pdf','ContentType','vector')
+plot(t,phi_opt, "-","Color", blue)
+plot(t,rad2deg(x(2,:)), "-", "Color", orange)
+plot(t,rad2deg(x(3,:)),"-", "Color", purple)
+plot(t,rad2deg(x(4,:)),"-", "Color", red)
+plot(t,psi_opt,"-", "Color", green)
+legend( "$\phi$","$\beta$", "$p$","$r$","$\psi$", "Location","northwest")
+
+subplot(1,2,2)
+title("Optimal Input vs Time");xlabel("Time [sec]"); ylabel("Defletion Angle [$^\circ$]")
+ylim([-40 40]); grid on
+hold on
+plot(t,(180/pi).*u(1,:), "Color", grey)
+plot(t,(180/pi).*u(2,:), "Color", lgrey)
+yline(30,"--k");yline(-30,"--k")
+legend("$\delta_{a}$", "$\delta_{r}$", "$\delta_{lim}$", "Location","northwest")
