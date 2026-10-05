@@ -8,7 +8,7 @@ x_end   = 1
 y_start = -0.5
 y_end   = 0.5
 t_start = 0
-t_end   = 0.00001
+t_end   = 0.0002
 nx      = 101 #number of grid points in x
 ny      = 101 #number of grid points in y
 CFL     = 0.8
@@ -63,12 +63,10 @@ dt   = min([dt_x,dt_y])                 #Choosing the smallest dt from the minum
 
 t_current = 0
 
-
-box_x_start_idx = np.where(x==0.45)[0][0]
-box_x_end_idx = np.where(x==0.55)[0][0]
-box_y_start_idx = np.where(y==-0.05)[0][0]
-box_y_end_idx = np.where(y==0.05)[0][0]
-
+box_x_start_idx = np.argmin(np.abs(x - 0.45))
+box_x_end_idx   = np.argmin(np.abs(x - 0.55))
+box_y_start_idx = np.argmin(np.abs(y - (-0.05)))
+box_y_end_idx   = np.argmin(np.abs(y - 0.05))
 
 while t_current < t_end: #Loop through time until we have simulated up until the end time 
     for j in range(ny): #Loop through y grid points (j==0, y==-0.5)
@@ -88,12 +86,68 @@ while t_current < t_end: #Loop through time until we have simulated up until the
               p_np1[i,j]   = p_np1[i-1,j]
               E_np1[i,j]   = E_np1[i-1,j]
             elif(i>box_x_start_idx)and(i<box_x_end_idx)and(j>box_y_start_idx)and(j<box_y_end_idx):
-              # Nothing happens inside the box
-              u_np1[i,j]   = u_np1[i,j]
-              v_np1[i,j]   = v_np1[i,j]
-              rho_np1[i,j] = rho_np1[i,j]
-              p_np1[i,j]   = p_np1[i,j]
-              E_np1[i,j]   = E_np1[i,j]
+              # Nothing happens inside the box, in this region the points will always represent the initial condition and will skip the flow evolution update
+              u_np1[i,j]   = u_n[i,j]
+              v_np1[i,j]   = v_n[i,j]
+              rho_np1[i,j] = rho_n[i,j]
+              p_np1[i,j]   = p_n[i,j]
+              E_np1[i,j]   = E_n[i,j]
+            elif(i==box_x_start_idx)and(j>box_y_start_idx)and(j<box_y_end_idx):
+               # Slip-wall conditions for the box left wall
+               u_np1[i,j]   = 0
+               v_np1[i,j]   = v_n[i-1,j]
+               rho_np1[i,j] = rho_n[i-1,j]
+               p_np1[i,j]   = p_n[i-1,j]
+               E_np1[i,j]   = E_n[i-1,j]
+            elif(i==box_x_end_idx)and(j>box_y_start_idx)and(j<box_y_end_idx):
+               # Slip-wall conditions for the box right wall
+               u_np1[i,j]   = 0
+               v_np1[i,j]   = v_n[i+1,j]
+               rho_np1[i,j] = rho_n[i+1,j]
+               p_np1[i,j]   = p_n[i+1,j]
+               E_np1[i,j]   = E_n[i+1,j]
+            elif(j==box_y_start_idx)and(i>box_x_start_idx)and(i<box_x_end_idx):
+               # Slip-wall conditions for the box bottom wall
+               u_np1[i,j]   = u_n[i,j-1]
+               v_np1[i,j]   = 0
+               rho_np1[i,j] = rho_n[i,j-1]
+               p_np1[i,j]   = p_n[i,j-1]
+               E_np1[i,j]   = E_n[i,j-1]
+            elif(j==box_y_end_idx)and(i>box_x_start_idx)and(i<box_x_end_idx):
+               # Slip-wall conditions for the box top wall
+               u_np1[i,j]   = u_n[i,j+1]
+               v_np1[i,j]   = 0
+               rho_np1[i,j] = rho_n[i,j+1]
+               p_np1[i,j]   = p_n[i,j+1]
+               E_np1[i,j]   = E_n[i,j+1]
+            elif(i==box_x_start_idx)and(j==box_y_start_idx):
+               # Slip-wall conditions for the box bottom left corner
+               u_np1[i,j]   = 0
+               v_np1[i,j]   = 0
+               rho_np1[i,j] = rho_n[i-1,j-1]
+               p_np1[i,j]   = p_n[i-1,j-1]
+               E_np1[i,j]   = E_n[i-1,j-1]
+            elif(i==box_x_start_idx)and(j==box_y_end_idx):
+               # Slip-wall conditions for the box top left corner
+               u_np1[i,j]   = 0
+               v_np1[i,j]   = 0
+               rho_np1[i,j] = rho_n[i-1,j+1]
+               p_np1[i,j]   = p_n[i-1,j+1]
+               E_np1[i,j]   = E_n[i-1,j+1]
+            elif(i==box_x_end_idx)and(j==box_y_start_idx):
+               # Slip-wall conditions for the box bottom right corner
+               u_np1[i,j]   = 0
+               v_np1[i,j]   = 0
+               rho_np1[i,j] = rho_n[i+1,j-1]
+               p_np1[i,j]   = p_n[i+1,j-1]
+               E_np1[i,j]   = E_n[i+1,j-1]
+            elif(i==box_x_end_idx)and(j==box_y_end_idx):
+               # Slip-wall conditions for the box top right corner
+               u_np1[i,j]   = 0
+               v_np1[i,j]   = 0
+               rho_np1[i,j] = rho_n[i+1,j+1]
+               p_np1[i,j]   = p_n[i+1,j+1]
+               E_np1[i,j]   = E_n[i+1,j+1]
             else:
               rho_np1[i,j] = (
                              0.25*(rho_n[i+1,j] + rho_n[i-1,j] + rho_n[i,j+1] + rho_n[i,j-1]) - 
@@ -159,17 +213,17 @@ while t_current < t_end: #Loop through time until we have simulated up until the
     E_history   = np.dstack((E_history,E_n))
     t_history.append(t_current)
 
-# print("U1 = ", u_history[:,:,0])
-# print("Uend = ", u_history[:,:,-1])
+print("U1 = ", u_history[:,:,0])
+print("Uend = ", u_history[:,:,-1])
 
-# print("V1 = ", v_history[:,:,0])
-# print("Vend = ", v_history[:,:,-1])
+print("V1 = ", v_history[:,:,0])
+print("Vend = ", v_history[:,:,-1])
 
-# print("rho1 = ", rho_history[:,:,0])
-# print("rhoend = ", rho_history[:,:,-1])
+print("rho1 = ", rho_history[:,:,0])
+print("rhoend = ", rho_history[:,:,-1])
 
-# print("p1 = ", p_history[:,:,0])
-# print("pend = ", p_history[:,:,-1])
+print("p1 = ", p_history[:,:,0])
+print("pend = ", p_history[:,:,-1])
 
-# print("E1 = ", E_history[:,:,0])
-# print("Eend = ", E_history[:,:,-1])
+print("E1 = ", E_history[:,:,0])
+print("Eend = ", E_history[:,:,-1])
