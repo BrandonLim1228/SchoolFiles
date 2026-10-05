@@ -8,13 +8,12 @@ x_end   = 1
 y_start = -0.5
 y_end   = 0.5
 t_start = 0
-t_end   = 1
+t_end   = 0.00001
 nx      = 101 #number of grid points in x
 ny      = 101 #number of grid points in y
 CFL     = 0.8
 R       = 287 #gas constant
 gamma   = 1.4 #ratio of specific heats
-a       = sqrt()
 
 # Calculating problem parameters
 dx = (x_end-x_start)/(nx-1)
@@ -57,19 +56,21 @@ E_history = np.empty((nx,ny,0)) #Initializing a time history energy vector to st
 t_history = []
 
 # Creating time variables
-if np.any(v_n==0):
-    dt = (CFL*dx)/np.max(np.abs(u_n))   #Calculating the most restrictive dt I can use based on a constant CFL number and the maximum u in my domain
-elif np.any(u_n==0):
-    dt = (CFL*dy)/np.max(np.abs(v_n))   #Calculating the most restrictive dt I can use based on a constant CFL number and the maximum u in my domain
-else:
-    dt_x = (CFL*dx)/np.max(np.abs(u_n)) #Calculating the most restrictive dt I can use based on a constant CFL number and the maximum u in my domain
-    dt_y = (CFL*dy)/np.max(np.abs(v_n)) #Calculating the most restrictive dt I can use based on a constant CFL number and the maximum u in my domain 
-    dt   = min([dt_x,dt_y])             #Choosing the smallest dt from the minumum dt of x and y
+a = np.sqrt((gamma*p_n)/rho_n)          #Calculating the speed of sound at every point in space
+dt_x = (CFL*dx)/np.max(np.abs(u_n) + a) #Calculating the most restrictive dt I can use based on a constant CFL number and the maximum u in my domain
+dt_y = (CFL*dy)/np.max(np.abs(v_n) + a) #Calculating the most restrictive dt I can use based on a constant CFL number and the maximum u in my domain 
+dt   = min([dt_x,dt_y])                 #Choosing the smallest dt from the minumum dt of x and y
 
 t_current = 0
 
+
+box_x_start_idx = np.where(x==0.45)[0][0]
+box_x_end_idx = np.where(x==0.55)[0][0]
+box_y_start_idx = np.where(y==-0.05)[0][0]
+box_y_end_idx = np.where(y==0.05)[0][0]
+
+
 while t_current < t_end: #Loop through time until we have simulated up until the end time 
-    print(t_current)
     for j in range(ny): #Loop through y grid points (j==0, y==-0.5)
         for i in range(nx): #Loop through the x grid points (i==0, x==0)
             if (j == 0)or(j == ny-1)or(i==0):
@@ -86,6 +87,13 @@ while t_current < t_end: #Loop through time until we have simulated up until the
               rho_np1[i,j] = rho_np1[i-1,j]
               p_np1[i,j]   = p_np1[i-1,j]
               E_np1[i,j]   = E_np1[i-1,j]
+            elif(i>box_x_start_idx)and(i<box_x_end_idx)and(j>box_y_start_idx)and(j<box_y_end_idx):
+              # Nothing happens inside the box
+              u_np1[i,j]   = u_np1[i,j]
+              v_np1[i,j]   = v_np1[i,j]
+              rho_np1[i,j] = rho_np1[i,j]
+              p_np1[i,j]   = p_np1[i,j]
+              E_np1[i,j]   = E_np1[i,j]
             else:
               rho_np1[i,j] = (
                              0.25*(rho_n[i+1,j] + rho_n[i-1,j] + rho_n[i,j+1] + rho_n[i,j-1]) - 
@@ -138,15 +146,10 @@ while t_current < t_end: #Loop through time until we have simulated up until the
     p_n = p_np1.copy()
     E_n = E_np1.copy()
 
-    #Recalculating dt
-    if np.any(v_n==0):
-        dt = (CFL*dx)/np.max(np.abs(u_n))   #Calculating the most restrictive dt I can use based on a constant CFL number and the maximum u in my domain
-    elif np.any(u_n==0):
-        dt = (CFL*dy)/np.max(np.abs(v_n))   #Calculating the most restrictive dt I can use based on a constant CFL number and the maximum u in my domain
-    else:
-        dt_x = (CFL*dx)/np.max(np.abs(u_n)) #Calculating the most restrictive dt I can use based on a constant CFL number and the maximum u in my domain
-        dt_y = (CFL*dy)/np.max(np.abs(v_n)) #Calculating the most restrictive dt I can use based on a constant CFL number and the maximum u in my domain 
-        dt   = min([dt_x,dt_y])             #Choosing the smallest dt from the minumum dt of x and y
+    a    = np.sqrt((gamma*p_n)/rho_n)       #Calculating the speed of sound at every point in space
+    dt_x = (CFL*dx)/np.max(np.abs(u_n) + a) #Calculating the most restrictive dt I can use based on a constant CFL number and the maximum u in my domain
+    dt_y = (CFL*dy)/np.max(np.abs(v_n) + a) #Calculating the most restrictive dt I can use based on a constant CFL number and the maximum u in my domain 
+    dt   = min([dt_x,dt_y])                 #Choosing the smallest dt from the minumum dt of x and y
 
     #Keeping track of variables in history
     u_history   = np.dstack((u_history,u_n))
@@ -156,5 +159,17 @@ while t_current < t_end: #Loop through time until we have simulated up until the
     E_history   = np.dstack((E_history,E_n))
     t_history.append(t_current)
 
+# print("U1 = ", u_history[:,:,0])
+# print("Uend = ", u_history[:,:,-1])
 
+# print("V1 = ", v_history[:,:,0])
+# print("Vend = ", v_history[:,:,-1])
 
+# print("rho1 = ", rho_history[:,:,0])
+# print("rhoend = ", rho_history[:,:,-1])
+
+# print("p1 = ", p_history[:,:,0])
+# print("pend = ", p_history[:,:,-1])
+
+# print("E1 = ", E_history[:,:,0])
+# print("Eend = ", E_history[:,:,-1])
