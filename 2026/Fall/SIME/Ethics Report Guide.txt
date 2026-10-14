@@ -1,0 +1,41 @@
+Ethical Challenge Report Checklist
+- [ ] Introduce the ethical challenge
+  - Identify the engineered/aerospace system involved.
+  - Briefly explain the ethical issue and why it matters.
+- [ ] Explain the relevant facts
+  - Describe what happened.
+  - Explain the technical and organizational circumstances that led to it.
+  - Identify the important people/organizations involved.
+  - Clearly distinguish known facts from incomplete or uncertain information.
+  - Explain why this is an ethical challenge, not just a technical failure.
+- [ ] Describe the actual resolution
+  - Explain what decision/actions were ultimately taken.
+  - If unresolved, explain what actions are currently being taken.
+  - Identify the ethical principles that influenced—or should have influenced—the decision.
+- [ ] Present alternative resolutions
+  - Give realistic actions that could have been taken instead.
+  - Explain whether these alternatives were actually considered.
+  - Explain any practical constraints: time, cost, safety, available information, technical capability, etc.
+  - Show how ethical considerations influenced your proposed alternatives.
+- [ ] Analyze the ethics of the actual decision
+  - Use specific principles from the NSPE and/or AIAA Code of Ethics.
+  - Explain which principles were followed or violated.
+  - Analyze the decision rather than simply stating that it was right or wrong.
+  - Discuss consequences for public safety, engineers, organizations, and other affected parties.
+- [ ] Compare the alternatives ethically
+  - Apply the same ethical principles to the alternative actions.
+  - Compare their advantages, disadvantages, risks, and consequences.
+  - Explain which alternative was ethically strongest and why.
+  - Discuss whether a better outcome was realistically possible given the information available at the time.
+- [ ] Conclude
+  - State your judgment about how the situation should have been handled.
+  - Summarize the main ethical lesson for engineers.
+  - Connect the case to engineers' professional responsibilities.
+- [ ] Final report checks
+  - Around 2,000 words or more if needed.
+  - Facts are clear, relevant, and properly sourced.
+  - Uncertain facts are explicitly identified as uncertain.
+  - NSPE/AIAA ethical principles are actually applied, not merely quoted.
+  - Alternatives are thoughtful and realistic.
+  - Analysis covers both the actual resolution and alternatives.
+  - Sources for any additional ethical theories/principles are identified.
