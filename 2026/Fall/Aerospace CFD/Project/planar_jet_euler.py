@@ -47,7 +47,7 @@ R_GAS = 287.05                 # J/(kg K)
 # Jet-exit and ambient conditions.
 P_AMBIENT = 101325.0           # Pa
 T_AMBIENT = 300.0              # K
-M_EXIT = 3.0		       # Initial Jet Mach Number
+M_EXIT = 3.0	       # Initial Jet Mach Number
 T_EXIT = 260.0                 # K, Initial Jet Temperature
 PRESSURE_RATIO = 0.8         # P_exit/P_ambient;
 
@@ -56,10 +56,10 @@ PRESSURE_RATIO = 0.8         # P_exit/P_ambient;
 NOZZLE_HEIGHT = 0.006          # m
 DOMAIN_LENGTHS_X = 6.0        # Lx/h (Note: Domain is this many nozzle heights long)
 DOMAIN_LENGTHS_Y = 3.0        # Ly/h in the computed half-domain (Note: Domain is this many nozzle heights tall)
-CELLS_PER_HEIGHT = 16          # Number of points across nozzle height (Note: This defines NY, NX, DX, and DY given NOZZLE_HEIGHT)
+CELLS_PER_HEIGHT = 64          # Number of points across nozzle height (Note: This defines NY, NX, DX, and DY given NOZZLE_HEIGHT)
 
 # Define whether the initial field should be constant (0), or a strip down the middle (1)
-INITIAL_JET = 1
+INITIAL_JET = 0
 
 NX = int(DOMAIN_LENGTHS_X * CELLS_PER_HEIGHT)
 NY = int(DOMAIN_LENGTHS_Y * CELLS_PER_HEIGHT)
